@@ -251,14 +251,14 @@ export class MemStorage implements IStorage {
           }
         }
         
-        // B棟：一層3戶 (A1~A3)，總共9層
+        // B棟：一層3戶 (B1~B3)，總共9層
         const bUnits: string[] = [];
-        const bUnitsPerFloor = 3; // A1 ~ A3
+        const bUnitsPerFloor = 3; // B1 ~ B3
         const bTotalFloors = 9; // 1F ~ 9F
         
         for (let floor = 1; floor <= bTotalFloors; floor++) {
           for (let unit = 1; unit <= bUnitsPerFloor; unit++) {
-            bUnits.push(`A${unit}-${floor}F`);
+            bUnits.push(`B${unit}-${floor}F`);
           }
         }
         
