@@ -1,9 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParkingContext } from '@/contexts/ParkingContext';
 import { Button } from '@/components/ui/button';
 
 const CurrentSelection: React.FC = () => {
   const { state, drawNext } = useParkingContext();
+  const [countdown, setCountdown] = useState<number>(3);
+  const timerRef = useRef<number | null>(null);
+
+  // 設置自動抽取下一個停車位的定時器
+  useEffect(() => {
+    // 如果暫停，則清除定時器
+    if (state.isPaused) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      return;
+    }
+
+    // 開始自動抽取
+    if (!timerRef.current) {
+      // 初始抽取
+      if (state.isStarted && !state.currentUnit) {
+        drawNext();
+      }
+
+      // 設置定時器，每3秒抽取一次
+      timerRef.current = window.setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            // 當倒數到1，執行抽取並重置倒數
+            drawNext();
+            return 3;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    // 清理函數
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [state.isPaused, state.isStarted, drawNext]);
 
   return (
     <div className="md:w-1/2 bg-white rounded-xl shadow-lg overflow-hidden">
@@ -26,14 +68,20 @@ const CurrentSelection: React.FC = () => {
           </div>
         </div>
         
-        <div className="mt-12">
-          <Button
-            onClick={drawNext}
-            disabled={state.isPaused}
-            className="bg-accent hover:bg-orange-600 text-white text-xl font-bold py-4 px-8 rounded-lg shadow-md transition-colors h-auto"
-          >
-            抽下一個
-          </Button>
+        <div className="mt-8 text-center">
+          {state.isPaused ? (
+            <Button
+              onClick={drawNext}
+              className="bg-accent hover:bg-orange-600 text-white text-xl font-bold py-4 px-8 rounded-lg shadow-md transition-colors h-auto"
+            >
+              手動抽取
+            </Button>
+          ) : (
+            <div className="text-2xl font-semibold text-primary-600">
+              <div className="mb-2">自動抽取中...</div>
+              <div className="text-3xl font-bold">{countdown} 秒後抽取下一個</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
