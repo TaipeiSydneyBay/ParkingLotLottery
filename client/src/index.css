@@ -17,8 +17,8 @@
 --primary-foreground: 211 100% 99%;
 --secondary: 60 4.8% 95.9%;
 --secondary-foreground: 24 9.8% 10%;
---accent: 60 4.8% 95.9%;
---accent-foreground: 24 9.8% 10%;
+--accent: 24 100% 50%;
+--accent-foreground: 0 0% 100%;
 --destructive: 0 84.2% 60.2%;
 --destructive-foreground: 60 9.1% 97.8%;
 --ring: 20 14.3% 4.1%;
@@ -39,8 +39,8 @@
 --primary-foreground: 211 100% 99%;
 --secondary: 240 3.7% 15.9%;
 --secondary-foreground: 0 0% 98%;
---accent: 240 3.7% 15.9%;
---accent-foreground: 0 0% 98%;
+--accent: 24 100% 50%;
+--accent-foreground: 0 0% 100%;
 --destructive: 0 62.8% 30.6%;
 --destructive-foreground: 0 0% 98%;
 --ring: 240 4.9% 83.9%;
@@ -55,5 +55,20 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+}
+
+/* 自定義樣式：保持開始選號按鈕的顏色 */
+.start-selection-btn {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.start-selection-btn:focus-visible {
+  outline: 2px solid hsl(var(--accent));
+  outline-offset: 2px;
+}
+
+.start-selection-btn:hover {
+  background-color: hsl(24 100% 45%);
 }
 

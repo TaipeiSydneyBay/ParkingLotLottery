@@ -58,7 +58,7 @@ const StartScreen: React.FC = () => {
         
         <Button 
           onClick={startSelection}
-          className="bg-accent hover:bg-orange-600 text-white text-2xl md:text-4xl font-bold py-6 px-12 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-300 h-auto"
+          className="start-selection-btn text-2xl md:text-4xl font-bold py-6 px-12 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-300 h-auto"
         >
           開始選號
         </Button>
