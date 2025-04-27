@@ -238,8 +238,21 @@ export class MemStorage implements IStorage {
           { length: halfUnits }, 
           (_, i) => `${building2}-${(i + 1).toString().padStart(3, '0')}`
         );
+      } else if (buildingGroup === 'F') {
+        // F 棟特殊格式: F戶號-樓層F (每層9戶，11層樓)
+        const fUnits: string[] = [];
+        const unitsPerFloor = 9; // F1 ~ F9
+        const totalFloors = 11; // 1F ~ 11F
+        
+        for (let floor = 1; floor <= totalFloors; floor++) {
+          for (let unit = 1; unit <= unitsPerFloor; unit++) {
+            fUnits.push(`F${unit}-${floor}F`);
+          }
+        }
+        
+        unassignedUnits['F'] = fUnits;
       } else {
-        // Single buildings (C, D, E, F)
+        // Other single buildings (C, D, E)
         unassignedUnits[buildingGroup as Building] = Array.from(
           { length: config.units }, 
           (_, i) => `${buildingGroup}-${(i + 1).toString().padStart(3, '0')}`
