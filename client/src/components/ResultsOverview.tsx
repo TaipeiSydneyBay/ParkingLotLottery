@@ -1,6 +1,8 @@
 import React from 'react';
 import { useParkingContext } from '@/contexts/ParkingContext';
 import BuildingFilter from './BuildingFilter';
+import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
 
 const ResultsOverview: React.FC = () => {
   const { state, filteredBuilding, setFilteredBuilding } = useParkingContext();
@@ -16,6 +18,17 @@ const ResultsOverview: React.FC = () => {
   const filteredAssignments = state.assignments.filter(
     assignment => filteredBuilding === 'all' || assignment.building === filteredBuilding
   );
+  
+  // 匯出 CSV 功能
+  const handleExportCSV = () => {
+    if (totalAssigned === 0) {
+      alert('目前沒有分配的停車位');
+      return;
+    }
+    
+    // 使用 window.open 打開匯出端點，瀏覽器會自動下載檔案
+    window.open('/api/parking/export-csv', '_blank');
+  };
 
   return (
     <div className="md:w-1/2 bg-white rounded-xl shadow-lg overflow-hidden">
@@ -97,9 +110,20 @@ const ResultsOverview: React.FC = () => {
             <span className="text-gray-600">已分配停車位:</span>
             <span className="font-bold">{totalAssigned}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-3">
             <span className="text-gray-600">剩餘停車位:</span>
             <span className="font-bold">{totalRemaining}</span>
+          </div>
+          <div className="flex justify-end">
+            <Button
+              onClick={handleExportCSV}
+              disabled={totalAssigned === 0}
+              size="sm"
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              匯出 CSV
+            </Button>
           </div>
         </div>
         
