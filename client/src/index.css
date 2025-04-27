@@ -59,16 +59,21 @@
 
 /* 自定義樣式：保持開始選號按鈕的顏色 */
 .start-selection-btn {
-  background-color: hsl(var(--accent));
-  color: hsl(var(--accent-foreground));
+  background-color: #ff6700 !important;
+  color: white !important;
 }
 
 .start-selection-btn:focus-visible {
-  outline: 2px solid hsl(var(--accent));
+  outline: 2px solid #ff6700;
   outline-offset: 2px;
+  background-color: #ff6700 !important;
+}
+
+.start-selection-btn:focus {
+  background-color: #ff6700 !important;
 }
 
 .start-selection-btn:hover {
-  background-color: hsl(24 100% 45%);
+  background-color: #e55c00 !important;
 }
 

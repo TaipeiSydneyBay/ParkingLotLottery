@@ -29,7 +29,7 @@ const SelectionScreen: React.FC = () => {
               onClick={togglePause}
               className={`px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-white ${
                 state.isPaused 
-                  ? 'bg-accent hover:bg-orange-600 text-white' 
+                  ? 'start-selection-btn' 
                   : 'bg-white text-primary hover:bg-gray-100'
               }`}
             >
