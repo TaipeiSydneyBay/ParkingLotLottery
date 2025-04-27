@@ -21,40 +21,40 @@ export type User = typeof users.$inferSelect;
 export const buildingConfigs = {
   'AB': {
     units: 44,
-    eligibleAreas: ['AB', 'B3'],
+    eligibleAreas: ['AB', 'B3'] as ParkingArea[],
     spotsCount: { 'AB': 43, 'B3': 2 }
   },
   'C': {
     units: 83,
-    eligibleAreas: ['B3', 'B2'],
+    eligibleAreas: ['B3', 'B2'] as ParkingArea[],
     spotsCount: { 'B3': 97, 'B2': 343 }
   },
   'D': {
     units: 84,
-    eligibleAreas: ['B3', 'B2'],
+    eligibleAreas: ['B3', 'B2'] as ParkingArea[],
     spotsCount: { 'B3': 97, 'B2': 343 }
   },
   'E': {
     units: 89,
-    eligibleAreas: ['B2', 'B1'],
+    eligibleAreas: ['B2', 'B1'] as ParkingArea[],
     spotsCount: { 'B2': 343, 'B1': 124 }
   },
   'F': {
     units: 96,
-    eligibleAreas: ['B2', 'B1'],
+    eligibleAreas: ['B2', 'B1'] as ParkingArea[],
     spotsCount: { 'B2': 343, 'B1': 124 }
   },
   'GH': {
     units: 40,
-    eligibleAreas: ['B2'],
+    eligibleAreas: ['B2'] as ParkingArea[],
     spotsCount: { 'B2': 343 }
   },
   'IJ': {
     units: 40,
-    eligibleAreas: ['B1'],
+    eligibleAreas: ['B1'] as ParkingArea[],
     spotsCount: { 'B1': 124 }
   }
-} as const;
+};
 
 // Types for the parking spot allocation system
 export type BuildingGroup = keyof typeof buildingConfigs;
