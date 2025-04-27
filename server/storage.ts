@@ -220,8 +220,8 @@ export class MemStorage implements IStorage {
     
     // Initialize units for each building/building group
     Object.entries(buildingConfigs).forEach(([buildingGroup, config]) => {
-      // Combined buildings (AB, GH, IJ)
-      if (buildingGroup.length === 2) {
+      // Combined buildings (GH, IJ)
+      if (buildingGroup === 'GH' || buildingGroup === 'IJ') {
         const building1 = buildingGroup[0] as Building;
         const building2 = buildingGroup[1] as Building;
         
@@ -238,6 +238,32 @@ export class MemStorage implements IStorage {
           { length: halfUnits }, 
           (_, i) => `${building2}-${(i + 1).toString().padStart(3, '0')}`
         );
+      } else if (buildingGroup === 'AB') {
+        // A 棟和 B 棟特殊格式
+        // A棟：一層3戶 (A1~A3)，總共8層
+        const aUnits: string[] = [];
+        const aUnitsPerFloor = 3; // A1 ~ A3
+        const aTotalFloors = 8; // 1F ~ 8F
+        
+        for (let floor = 1; floor <= aTotalFloors; floor++) {
+          for (let unit = 1; unit <= aUnitsPerFloor; unit++) {
+            aUnits.push(`A${unit}-${floor}F`);
+          }
+        }
+        
+        // B棟：一層3戶 (A1~A3)，總共9層
+        const bUnits: string[] = [];
+        const bUnitsPerFloor = 3; // A1 ~ A3
+        const bTotalFloors = 9; // 1F ~ 9F
+        
+        for (let floor = 1; floor <= bTotalFloors; floor++) {
+          for (let unit = 1; unit <= bUnitsPerFloor; unit++) {
+            bUnits.push(`A${unit}-${floor}F`);
+          }
+        }
+        
+        unassignedUnits['A'] = aUnits;
+        unassignedUnits['B'] = bUnits;
       } else if (buildingGroup === 'F') {
         // F 棟特殊格式: F戶號-樓層F (每層9戶，11層樓)
         const fUnits: string[] = [];
