@@ -54,7 +54,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // 創建 CSV 內容
-      let csvContent = '戶別,棟別,停車位\n';
+      let csvContent = 'Unit,Building,ParkingSpot\n';
       
       assignments.forEach((assignment: Assignment) => {
         csvContent += `${assignment.unit},${assignment.building},${assignment.spot}\n`;
@@ -63,11 +63,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // 設置檔案名稱包含當前日期
       const date = new Date();
       const dateStr = `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`;
-      const fileName = `停車位分配_${dateStr}.csv`;
+      const fileName = `parking_assignment_${dateStr}.csv`;
       
       // 設置 HTTP header
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
       
       // 回傳 CSV 內容
       res.status(200).send(csvContent);
