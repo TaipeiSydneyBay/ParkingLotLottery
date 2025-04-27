@@ -162,11 +162,45 @@ export class MemStorage implements IStorage {
 
   // Helper methods
   private initializeAvailableSpots(): void {
+    // 生成 AB 區車位 (1-43，排除25號友善車位)
+    const abSpots = Array.from({ length: 43 }, (_, i) => `${i + 1}號`)
+      .filter(num => num !== '25號');
+    
+    // 生成 B3 區車位 (43-1到144號，排除 67, 68, 70, 81 號友善車位)
+    const b3Spots = [];
+    // 特殊編號 43-1
+    b3Spots.push('43-1號');
+    // 從44開始到144
+    for (let i = 44; i <= 144; i++) {
+      if (![67, 68, 70, 81].includes(i)) {
+        b3Spots.push(`${i}號`);
+      }
+    }
+    
+    // 生成 B2 區車位 (145-491號，排除 341, 372, 490, 491 號友善車位)
+    const b2Spots = [];
+    for (let i = 145; i <= 491; i++) {
+      if (![341, 372, 490, 491].includes(i)) {
+        b2Spots.push(`${i}號`);
+      }
+    }
+    
+    // 生成 B1 區車位 (492-619號，排除 568, 569, 573-1, 575 號友善車位)
+    const b1Spots = [];
+    for (let i = 492; i <= 619; i++) {
+      // 排除特定的友善車位，573-1需要特殊處理
+      if (![568, 569, 575].includes(i)) {
+        b1Spots.push(`${i}號`);
+      }
+    }
+    // 添加特殊編號 573-1 (已排除)
+    // b1Spots.push('573-1號');  // 被排除
+    
     this.parkingState.availableSpots = {
-      'AB': Array.from({ length: 43 }, (_, i) => `AB-${i + 1}`),
-      'B3': Array.from({ length: 97 + 2 }, (_, i) => `B3-${i + 1}`),
-      'B2': Array.from({ length: 343 }, (_, i) => `B2-${i + 1}`),
-      'B1': Array.from({ length: 124 }, (_, i) => `B1-${i + 1}`)
+      'AB': abSpots,
+      'B3': b3Spots,
+      'B2': b2Spots,
+      'B1': b1Spots
     };
   }
 
