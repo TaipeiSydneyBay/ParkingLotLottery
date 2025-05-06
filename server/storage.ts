@@ -104,8 +104,8 @@ export class MemStorage implements IStorage {
       return { assignment: null, state: this.parkingState };
     }
 
-    // Find a random unit from unassigned units
-    const selectedUnitInfo = this.getRandomUnit();
+    // Get an unit from unassigned units
+    const selectedUnitInfo = this.getNextUnit();
 
     if (!selectedUnitInfo) {
       return { assignment: null, state: this.parkingState };
@@ -234,7 +234,7 @@ export class MemStorage implements IStorage {
     this.parkingState.unassignedUnits = unassignedUnits;
   }
 
-  private getRandomUnit(): { building: Building; unit: string } | null {
+  private getNextUnit(): { building: Building; unit: string } | null {
     // Create a flat array of all unassigned units
     const allUnits: { building: Building; unit: string }[] = [];
 
@@ -246,16 +246,17 @@ export class MemStorage implements IStorage {
       }
     );
 
-    if (allUnits.length === 0) return null;
+    if (allUnits.length === 0) {
+      return null;
+    }
 
-    // Select a random unit
-    const randomIndex = Math.floor(Math.random() * allUnits.length);
-    const selected = allUnits[randomIndex];
+    const selected = allUnits[0];
 
     // Remove the selected unit from unassignedUnits
     const unitIndex = this.parkingState.unassignedUnits[
       selected.building
     ].indexOf(selected.unit);
+
     if (unitIndex > -1) {
       this.parkingState.unassignedUnits[selected.building].splice(unitIndex, 1);
     }
