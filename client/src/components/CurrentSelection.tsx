@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParkingContext } from '@/contexts/ParkingContext';
-import { Button } from '@/components/ui/button';
+import React, { useEffect, useState, useRef } from "react";
+import { useParkingContext } from "@/contexts/ParkingContext";
+import { Button } from "@/components/ui/button";
 
 const CurrentSelection: React.FC = () => {
   const { state, drawNext } = useParkingContext();
@@ -25,13 +25,13 @@ const CurrentSelection: React.FC = () => {
         drawNext();
       }
 
-      // 設置定時器，每3秒抽取一次
+      // 設置定時器，每1秒抽取一次
       timerRef.current = window.setInterval(() => {
-        setCountdown(prev => {
+        setCountdown((prev) => {
           if (prev <= 1) {
             // 當倒數到1，執行抽取並重置倒數
             drawNext();
-            return 3;
+            return 1;
           }
           return prev - 1;
         });
@@ -52,22 +52,26 @@ const CurrentSelection: React.FC = () => {
       <div className="bg-primary text-white p-4">
         <h2 className="text-xl font-bold">目前選號</h2>
       </div>
-      
+
       <div className="p-6 flex flex-col items-center justify-center min-h-[500px]">
         <div className="mb-12 text-center">
-          <h3 className="text-lg font-medium text-gray-500 mb-2">目前抽出的停車位號碼</h3>
+          <h3 className="text-lg font-medium text-gray-500 mb-2">
+            目前抽出的停車位號碼
+          </h3>
           <div className="text-6xl font-bold text-primary bg-blue-50 rounded-xl p-8 min-w-[200px] text-center">
-            {state.currentSpot || '--'}
+            {state.currentSpot || "--"}
           </div>
         </div>
-        
+
         <div className="text-center">
-          <h3 className="text-lg font-medium text-gray-500 mb-2">目前抽出的戶別</h3>
+          <h3 className="text-lg font-medium text-gray-500 mb-2">
+            目前抽出的戶別
+          </h3>
           <div className="text-5xl font-bold text-primary bg-blue-50 rounded-xl p-6 min-w-[180px] text-center">
-            {state.currentUnit || '--'}
+            {state.currentUnit || "--"}
           </div>
         </div>
-        
+
         <div className="mt-8 text-center">
           {state.isPaused ? (
             <Button
@@ -79,7 +83,9 @@ const CurrentSelection: React.FC = () => {
           ) : (
             <div className="text-2xl font-semibold text-primary-600">
               <div className="mb-2">自動抽取中...</div>
-              <div className="text-3xl font-bold">{countdown} 秒後抽取下一個</div>
+              <div className="text-3xl font-bold">
+                {countdown} 秒後抽取下一個
+              </div>
             </div>
           )}
         </div>
