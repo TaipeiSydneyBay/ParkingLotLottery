@@ -30,6 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { assignment, state } = await storage.drawNext();
       res.json({ assignment, state });
     } catch (error) {
+      console.error('Failed to draw next parking spot:', error);
       res.status(500).json({ message: 'Failed to draw next parking spot' });
     }
   });

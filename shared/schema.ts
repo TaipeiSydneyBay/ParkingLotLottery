@@ -58,6 +58,12 @@ export const buildingConfigs: Record<string, BuildingConfig> = {
   IJ: {
     units: 40,
     eligibleAreas: ["B1"] as ParkingArea[],
+    spotCount: {
+      AB: 0,
+      B3: 0,
+      B2: 0,
+      B1: 40,
+    },
   },
 };
 

@@ -367,6 +367,8 @@ export class MemStorage implements IStorage {
 
     const hasRestrictedUnit = this.parkingState.restrictedUnits[unit];
 
+    const currentSpotCounts = this.calculateSpotCounts();
+
     let selectedArea;
 
     if (hasRestrictedUnit) {
@@ -376,34 +378,49 @@ export class MemStorage implements IStorage {
         const spotCounts = Object.entries(buildingConfig.spotCount)
           .map(([area, count]) => {
             if (count > 0) {
-              const assignedSpotCount = this.calculateAssignedSpotCount(
-                area as ParkingArea
-              );
-
               return {
                 area: area as ParkingArea,
-                availableCount: count - assignedSpotCount,
+                canSelected:
+                  currentSpotCounts[area as ParkingArea].available >
+                  currentSpotCounts[area as ParkingArea].reserved,
               };
             } else {
               return {
                 area: area as ParkingArea,
-                availableCount: 0,
+                canSelected: false,
               };
             }
           })
-          .filter((item) => item.availableCount > 0);
+          .filter((item) => item.canSelected);
 
         // Randomly select an area from available areas
         const randomAreaIndex = Math.floor(Math.random() * spotCounts.length);
 
-        selectedArea = availableAreas[randomAreaIndex];
-      } else {
-        // Randomly select an area from available areas
-        const randomAreaIndex = Math.floor(
-          Math.random() * availableAreas.length
-        );
+        if (!spotCounts[randomAreaIndex]) {
+          console.error("No available areas found for selection.");
+        }
 
-        selectedArea = availableAreas[randomAreaIndex];
+        selectedArea = spotCounts[randomAreaIndex].area;
+      } else {
+        const spotCounts = availableAreas
+          .map((area) => {
+            return {
+              area: area as ParkingArea,
+              canSelected:
+                currentSpotCounts[area as ParkingArea].available >
+                currentSpotCounts[area as ParkingArea].reserved,
+            };
+          })
+          .filter((item) => item.canSelected);
+
+        // Randomly select an area from available areas
+        const randomAreaIndex = Math.floor(Math.random() * spotCounts.length);
+
+        if (!spotCounts[randomAreaIndex]) {
+          console.error("No available areas found for selection.");
+        }
+
+        selectedArea = spotCounts[randomAreaIndex].area;
       }
     }
 
@@ -420,10 +437,39 @@ export class MemStorage implements IStorage {
     return selectedSpot;
   }
 
-  private calculateAssignedSpotCount(area: ParkingArea): number {
-    return this.parkingState.assignments.filter((assignment) =>
-      assignment.spot.startsWith(area)
-    ).length;
+  private calculateSpotCounts(): Record<
+    ParkingArea,
+    { available: number; reserved: number }
+  > {
+    const counts: Record<ParkingArea, { available: number; reserved: number }> =
+      {
+        AB: {
+          available: 0,
+          reserved: 0,
+        },
+        B3: {
+          available: 0,
+          reserved: 14,
+        },
+        B2: {
+          available: 0,
+          reserved: 34,
+        },
+        B1: {
+          available: 0,
+          reserved: 84,
+        },
+      };
+
+    // Calculate available spots
+    Object.keys(this.parkingState.availableSpots).forEach((area) => {
+      const parkingArea = area as ParkingArea;
+
+      counts[parkingArea].available =
+        this.parkingState.availableSpots[parkingArea].length;
+    });
+
+    return counts;
   }
 }
 
