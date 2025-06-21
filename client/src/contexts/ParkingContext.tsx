@@ -143,10 +143,11 @@ export function ParkingProvider({ children }: { children: React.ReactNode }) {
         });
         dispatch({ type: 'ADD_ASSIGNMENT', payload: data.assignment });
       } else {
-        toast({
-          title: "No more units",
-          description: "All units have been assigned parking spots.",
-        });
+        console.warn('No more units to assign');
+        // toast({
+        //   title: "No more units",
+        //   description: "All units have been assigned parking spots.",
+        // });
       }
       
       // Update the overall state
