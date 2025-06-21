@@ -4,6 +4,7 @@ import {
   ParkingState,
   buildingConfigs,
   Building,
+  BuildingConfig,
   ParkingArea,
   Assignment,
 } from "@shared/schema";
@@ -83,7 +84,6 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
-      badSpots: BAD_SPOTS,
       restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
       currentUnit: null,
@@ -148,7 +148,7 @@ export class MemStorage implements IStorage {
     const { building, unit } = selectedUnitInfo;
 
     // Assign a random spot to the unit
-    const assignedSpot = this.assignRandomSpot(building);
+    const assignedSpot = this.assignRandomSpot(building, unit);
 
     if (!assignedSpot) {
       return { assignment: null, state: this.parkingState };
@@ -192,7 +192,6 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
-      badSpots: BAD_SPOTS,
       restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
       currentUnit: null,
@@ -206,52 +205,70 @@ export class MemStorage implements IStorage {
   private initializeAvailableSpots(): void {
     // 生成 AB 區車位 (1-43，排除25號友善車位)
     const abSpots = [];
+
     for (let i = 1; i <= 43; i++) {
-      if (i === 25) continue; // 排除 25 號友善車位
-      if (i % 10 === 4) {
-        abSpots.push(`AB-${i - 1}-1`); // 尾數是 4 的，減1後加上 -1
-      } else {
-        abSpots.push(`AB-${i}`);
+      const spot = i % 10 === 4 ? `AB-${i - 1}-1` : `AB-${i}`; // 尾數是 4 的，減1後加上 -1
+
+      if (["AB-25"].includes(spot)) {
+        continue; // 排除友善車位
       }
+
+      if (BAD_SPOTS.includes(spot)) {
+        continue; // 排除不好停的車位
+      }
+
+      abSpots.push(spot);
     }
 
     // 生成 B3 區車位 (43-1到144號，排除 67, 68, 70, 81 號友善車位)
     const b3Spots = [];
+
     for (let i = 43; i <= 144; i++) {
-      // 排除特定的友善車位
-      if (![67, 68, 70, 81].includes(i)) {
-        if (i % 10 === 4) {
-          b3Spots.push(`B3-${i - 1}-1`); // 尾數是 4 的，減1後加上 -1
-        } else {
-          b3Spots.push(`B3-${i}`);
-        }
+      const spot = i % 10 === 4 ? `B3-${i - 1}-1` : `B3-${i}`; // 尾數是 4 的，減1後加上 -1
+
+      if (["B3-67", "B3-68", "B3-70", "B3-81"].includes(spot)) {
+        continue; // 排除友善車位
       }
+
+      if (BAD_SPOTS.includes(spot)) {
+        continue; // 排除不好停的車位
+      }
+
+      b3Spots.push(spot);
     }
 
     // 生成 B2 區車位 (145-491號，排除 341, 372, 490, 491 號友善車位)
     const b2Spots = [];
+
     for (let i = 145; i <= 491; i++) {
-      // 排除特定的友善車位
-      if (![341, 372, 490, 491].includes(i)) {
-        if (i % 10 === 4) {
-          b2Spots.push(`B2-${i - 1}-1`); // 尾數是 4 的，減1後加上 -1
-        } else {
-          b2Spots.push(`B2-${i}`);
-        }
+      const spot = i % 10 === 4 ? `B2-${i - 1}-1` : `B2-${i}`; // 尾數是 4 的，減1後加上 -1
+
+      if (["B2-341", "B2-372", "B2-490", "B2-491"].includes(spot)) {
+        continue; // 排除友善車位
       }
+
+      if (BAD_SPOTS.includes(spot)) {
+        continue; // 排除不好停的車位
+      }
+
+      b2Spots.push(spot);
     }
 
     // 生成 B1 區車位 (492-619號，排除 568, 569, 573-1, 575 號友善車位)
     const b1Spots = [];
+
     for (let i = 492; i <= 619; i++) {
-      // 排除特定的友善車位
-      if (![568, 569, 574, 575].includes(i)) {
-        if (i % 10 === 4) {
-          b1Spots.push(`B1-${i - 1}-1`); // 尾數是 4 的，減1後加上 -1
-        } else {
-          b1Spots.push(`B1-${i}`);
-        }
+      const spot = i % 10 === 4 ? `B1-${i - 1}-1` : `B1-${i}`; // 尾數是 4 的，減1後加上 -1
+
+      if (["B1-568", "B1-569", "B1-573-1", "B1-575"].includes(spot)) {
+        continue; // 排除友善車位
       }
+
+      if (BAD_SPOTS.includes(spot)) {
+        continue; // 排除不好停的車位
+      }
+
+      b1Spots.push(spot);
     }
 
     this.parkingState.availableSpots = {
@@ -301,7 +318,8 @@ export class MemStorage implements IStorage {
       return null;
     }
 
-    const selected = allUnits[0];
+    const selectedIndex = Math.floor(Math.random() * allUnits.length);
+    const selected = allUnits[selectedIndex];
 
     // Remove the selected unit from unassignedUnits
     const unitIndex = this.parkingState.unassignedUnits[
@@ -315,7 +333,7 @@ export class MemStorage implements IStorage {
     return selected;
   }
 
-  private getEligibleParkingAreas(building: Building): ParkingArea[] {
+  private getBuildingConfig(building: Building): BuildingConfig {
     // Map individual buildings to their building group
     let buildingGroup: keyof typeof buildingConfigs;
 
@@ -329,11 +347,12 @@ export class MemStorage implements IStorage {
       buildingGroup = building;
     }
 
-    return buildingConfigs[buildingGroup].eligibleAreas;
+    return buildingConfigs[buildingGroup];
   }
 
-  private assignRandomSpot(building: Building): string | null {
-    const eligibleAreas = this.getEligibleParkingAreas(building);
+  private assignRandomSpot(building: Building, unit: string): string | null {
+    const buildingConfig = this.getBuildingConfig(building);
+    const eligibleAreas = buildingConfig.eligibleAreas;
 
     // Filter to only include areas that still have spots available
     const availableAreas = eligibleAreas.filter(
@@ -342,14 +361,56 @@ export class MemStorage implements IStorage {
         this.parkingState.availableSpots[area].length > 0
     );
 
-    if (availableAreas.length === 0) return null;
+    if (availableAreas.length === 0) {
+      return null;
+    }
 
-    // Randomly select an area from available areas
-    const randomAreaIndex = Math.floor(Math.random() * availableAreas.length);
-    const selectedArea = availableAreas[randomAreaIndex];
+    const hasRestrictedUnit = this.parkingState.restrictedUnits[unit];
+
+    let selectedArea;
+
+    if (hasRestrictedUnit) {
+      selectedArea = hasRestrictedUnit;
+    } else {
+      if (buildingConfig.spotCount) {
+        const spotCounts = Object.entries(buildingConfig.spotCount)
+          .map(([area, count]) => {
+            if (count > 0) {
+              const assignedSpotCount = this.calculateAssignedSpotCount(
+                area as ParkingArea
+              );
+
+              return {
+                area: area as ParkingArea,
+                availableCount: count - assignedSpotCount,
+              };
+            } else {
+              return {
+                area: area as ParkingArea,
+                availableCount: 0,
+              };
+            }
+          })
+          .filter((item) => item.availableCount > 0);
+
+        // Randomly select an area from available areas
+        const randomAreaIndex = Math.floor(Math.random() * spotCounts.length);
+
+        selectedArea = availableAreas[randomAreaIndex];
+      } else {
+        // Randomly select an area from available areas
+        const randomAreaIndex = Math.floor(
+          Math.random() * availableAreas.length
+        );
+
+        selectedArea = availableAreas[randomAreaIndex];
+      }
+    }
 
     // Randomly select a spot from the selected area
     const spots = this.parkingState.availableSpots[selectedArea];
+
+    // Randomly select a spot from the filtered spots
     const randomSpotIndex = Math.floor(Math.random() * spots.length);
     const selectedSpot = spots[randomSpotIndex];
 
@@ -357,6 +418,12 @@ export class MemStorage implements IStorage {
     this.parkingState.availableSpots[selectedArea].splice(randomSpotIndex, 1);
 
     return selectedSpot;
+  }
+
+  private calculateAssignedSpotCount(area: ParkingArea): number {
+    return this.parkingState.assignments.filter((assignment) =>
+      assignment.spot.startsWith(area)
+    ).length;
   }
 }
 

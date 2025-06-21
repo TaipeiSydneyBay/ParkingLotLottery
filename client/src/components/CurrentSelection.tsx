@@ -35,7 +35,7 @@ const CurrentSelection: React.FC = () => {
           }
           return prev - 1;
         });
-      }, 1000);
+      }, 50);
     }
 
     // 清理函數

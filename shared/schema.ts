@@ -17,14 +17,22 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
+export type BuildingConfig = {
+  units: number;
+  eligibleAreas: ParkingArea[];
+  spotCount?: Record<ParkingArea, number>;
+};
+
 // Building configuration
-export const buildingConfigs = {
+export const buildingConfigs: Record<string, BuildingConfig> = {
   AB: {
     units: 44,
     eligibleAreas: ["AB", "B3"] as ParkingArea[],
     spotCount: {
       AB: 42,
       B3: 2,
+      B2: 0,
+      B1: 0,
     },
   },
   C: {
@@ -88,7 +96,6 @@ export interface ParkingState {
   availableSpots: Record<ParkingArea, string[]>;
   unassignedUnits: Record<Building, string[]>;
   assignments: Assignment[];
-  badSpots: string[];
   restrictedUnits: Record<string, ParkingArea>;
   currentUnit: string | null;
   currentSpot: string | null;
