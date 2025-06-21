@@ -9,6 +9,38 @@ import {
 } from "@shared/schema";
 import originalUnits from "./units.json";
 
+const BAD_SPOTS = [
+  "B3-82",
+  "B3-143-1",
+  "B2-159",
+  "B2-160",
+  "B2-161",
+  "B2-338",
+  "B2-339",
+  "B2-340",
+  "B2-408",
+  "B2-486",
+  "B2-487",
+  "B1-572",
+  "B1-573",
+];
+
+const RESTRICTED_UNITS: Record<string, ParkingArea> = {
+  "E8-1F": "B2",
+  "E7-1F": "B2",
+  "E6-1F": "B2",
+  "E5-1F": "B2",
+  "E9-2F": "B1",
+  "E8-2F": "B1",
+  "E7-2F": "B1",
+  "E6-2F": "B1",
+  "E5-2F": "B1",
+  "F5-1F": "B1",
+  "F7-1F": "B1",
+  "F8-1F": "B1",
+  "F9-1F": "B1",
+};
+
 export interface IStorage {
   // User operations (keeping these from the original storage interface)
   getUser(id: number): Promise<User | undefined>;
@@ -51,6 +83,8 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
+      badSpots: BAD_SPOTS,
+      restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
       currentUnit: null,
       currentSpot: null,
@@ -158,6 +192,8 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
+      badSpots: BAD_SPOTS,
+      restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
       currentUnit: null,
       currentSpot: null,
@@ -166,42 +202,57 @@ export class MemStorage implements IStorage {
     };
   }
 
-  // Helper methods
+  // 產生時如果有遇到數字尾是 4 的，則減1之後加上 -1 再繼續產生
   private initializeAvailableSpots(): void {
     // 生成 AB 區車位 (1-43，排除25號友善車位)
-    const abSpots = Array.from({ length: 43 }, (_, i) => `AB-${i + 1}`).filter(
-      (num) => num !== "AB-25"
-    );
+    const abSpots = [];
+    for (let i = 1; i <= 43; i++) {
+      if (i === 25) continue; // 排除 25 號友善車位
+      if (i % 10 === 4) {
+        abSpots.push(`AB-${i - 1}-1`); // 尾數是 4 的，減1後加上 -1
+      } else {
+        abSpots.push(`AB-${i}`);
+      }
+    }
 
     // 生成 B3 區車位 (43-1到144號，排除 67, 68, 70, 81 號友善車位)
     const b3Spots = [];
-    // 特殊編號 43-1
-    b3Spots.push("B3-43-1");
-    // 從44開始到144
-    for (let i = 44; i <= 144; i++) {
+    for (let i = 43; i <= 144; i++) {
+      // 排除特定的友善車位
       if (![67, 68, 70, 81].includes(i)) {
-        b3Spots.push(`B3-${i}`);
+        if (i % 10 === 4) {
+          b3Spots.push(`B3-${i - 1}-1`); // 尾數是 4 的，減1後加上 -1
+        } else {
+          b3Spots.push(`B3-${i}`);
+        }
       }
     }
 
     // 生成 B2 區車位 (145-491號，排除 341, 372, 490, 491 號友善車位)
     const b2Spots = [];
     for (let i = 145; i <= 491; i++) {
+      // 排除特定的友善車位
       if (![341, 372, 490, 491].includes(i)) {
-        b2Spots.push(`B2-${i}`);
+        if (i % 10 === 4) {
+          b2Spots.push(`B2-${i - 1}-1`); // 尾數是 4 的，減1後加上 -1
+        } else {
+          b2Spots.push(`B2-${i}`);
+        }
       }
     }
 
     // 生成 B1 區車位 (492-619號，排除 568, 569, 573-1, 575 號友善車位)
     const b1Spots = [];
     for (let i = 492; i <= 619; i++) {
-      // 排除特定的友善車位，573-1需要特殊處理
-      if (![568, 569, 575].includes(i)) {
-        b1Spots.push(`B1-${i}`);
+      // 排除特定的友善車位
+      if (![568, 569, 574, 575].includes(i)) {
+        if (i % 10 === 4) {
+          b1Spots.push(`B1-${i - 1}-1`); // 尾數是 4 的，減1後加上 -1
+        } else {
+          b1Spots.push(`B1-${i}`);
+        }
       }
     }
-    // 添加特殊編號 573-1 (已排除)
-    // b1Spots.push('B1-573-1');  // 被排除
 
     this.parkingState.availableSpots = {
       AB: abSpots,

@@ -19,47 +19,54 @@ export type User = typeof users.$inferSelect;
 
 // Building configuration
 export const buildingConfigs = {
-  'AB': {
+  AB: {
     units: 44,
-    eligibleAreas: ['AB', 'B3'] as ParkingArea[],
-    spotsCount: { 'AB': 43, 'B3': 2 }
+    eligibleAreas: ["AB", "B3"] as ParkingArea[],
+    spotCount: {
+      AB: 42,
+      B3: 2,
+    },
   },
-  'C': {
+  C: {
     units: 83,
-    eligibleAreas: ['B3', 'B2'] as ParkingArea[],
-    spotsCount: { 'B3': 97, 'B2': 343 }
+    eligibleAreas: ["B3", "B2"] as ParkingArea[],
   },
-  'D': {
+  D: {
     units: 84,
-    eligibleAreas: ['B3', 'B2'] as ParkingArea[],
-    spotsCount: { 'B3': 97, 'B2': 343 }
+    eligibleAreas: ["B3", "B2"] as ParkingArea[],
   },
-  'E': {
+  E: {
     units: 89,
-    eligibleAreas: ['B2', 'B1'] as ParkingArea[],
-    spotsCount: { 'B2': 343, 'B1': 124 }
+    eligibleAreas: ["B3", "B2", "B1"] as ParkingArea[],
   },
-  'F': {
+  F: {
     units: 96,
-    eligibleAreas: ['B2', 'B1'] as ParkingArea[],
-    spotsCount: { 'B2': 343, 'B1': 124 }
+    eligibleAreas: ["B3", "B2", "B1"] as ParkingArea[],
   },
-  'GH': {
+  GH: {
     units: 40,
-    eligibleAreas: ['B2'] as ParkingArea[],
-    spotsCount: { 'B2': 343 }
+    eligibleAreas: ["B2"] as ParkingArea[],
   },
-  'IJ': {
+  IJ: {
     units: 40,
-    eligibleAreas: ['B1'] as ParkingArea[],
-    spotsCount: { 'B1': 124 }
-  }
+    eligibleAreas: ["B1"] as ParkingArea[],
+  },
 };
 
 // Types for the parking spot allocation system
 export type BuildingGroup = keyof typeof buildingConfigs;
-export type Building = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J';
-export type ParkingArea = 'AB' | 'B3' | 'B2' | 'B1';
+export type Building =
+  | "A"
+  | "B"
+  | "C"
+  | "D"
+  | "E"
+  | "F"
+  | "G"
+  | "H"
+  | "I"
+  | "J";
+export type ParkingArea = "AB" | "B3" | "B2" | "B1";
 
 export interface Unit {
   id: string;
@@ -81,6 +88,8 @@ export interface ParkingState {
   availableSpots: Record<ParkingArea, string[]>;
   unassignedUnits: Record<Building, string[]>;
   assignments: Assignment[];
+  badSpots: string[];
+  restrictedUnits: Record<string, ParkingArea>;
   currentUnit: string | null;
   currentSpot: string | null;
   isStarted: boolean;
