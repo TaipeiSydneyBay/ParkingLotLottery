@@ -108,6 +108,7 @@ export interface ParkingState {
   currentSpot: string | null;
   isStarted: boolean;
   isPaused: boolean;
+  isCompleted: boolean;
 }
 
 // API response types

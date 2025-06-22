@@ -91,6 +91,7 @@ export class MemStorage implements IStorage {
       currentSpot: null,
       isStarted: false,
       isPaused: false,
+      isCompleted: false,
     };
 
     this.initializeAvailableSpots();
@@ -128,6 +129,7 @@ export class MemStorage implements IStorage {
 
     this.parkingState.isStarted = true;
     this.parkingState.isPaused = false;
+    this.parkingState.isCompleted = false;
     this.parkingState.assignments = [];
     this.parkingState.currentUnit = null;
     this.parkingState.currentSpot = null;
@@ -139,7 +141,7 @@ export class MemStorage implements IStorage {
     assignment: Assignment | null;
     state: ParkingState;
   }> {
-    if (!this.parkingState.isStarted || this.parkingState.isPaused) {
+    if (!this.parkingState.isStarted || this.parkingState.isPaused || this.parkingState.isCompleted) {
       return { assignment: null, state: this.parkingState };
     }
 
@@ -147,6 +149,12 @@ export class MemStorage implements IStorage {
     const selectedUnitInfo = this.getNextUnit();
 
     if (!selectedUnitInfo) {
+      // 所有戶別都已分配完成
+      this.parkingState.isCompleted = true;
+      this.parkingState.isPaused = true;
+      this.parkingState.currentUnit = null;
+      this.parkingState.currentSpot = null;
+      console.log("所有抽籤已完成！");
       return { assignment: null, state: this.parkingState };
     }
 
@@ -156,6 +164,10 @@ export class MemStorage implements IStorage {
     const assignedSpot = this.assignRandomSpot(building, unit);
 
     if (!assignedSpot) {
+      // 無法分配車位時也標記為完成
+      this.parkingState.isCompleted = true;
+      this.parkingState.isPaused = true;
+      console.log("無法分配更多車位，抽籤結束！");
       return { assignment: null, state: this.parkingState };
     }
 
