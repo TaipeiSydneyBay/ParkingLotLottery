@@ -92,7 +92,7 @@ export class MemStorage implements IStorage {
       isStarted: false,
       isPaused: false,
     };
-    
+
     this.initializeAvailableSpots();
     this.initializeUnassignedUnits();
     this.initializeReservedSpots();
@@ -205,7 +205,7 @@ export class MemStorage implements IStorage {
       isStarted: false,
       isPaused: false,
     };
-    
+
     this.initializeAvailableSpots();
     this.initializeUnassignedUnits();
     this.initializeReservedSpots();
@@ -315,24 +315,27 @@ export class MemStorage implements IStorage {
   // 初始化預留車位機制
   private initializeReservedSpots(): void {
     // 根據 buildingConfigs 中有 spotCount 的配置進行預留
-    
+
     // AB棟預留：AB區42個 + B3區2個
     const abSpots = this.parkingState.availableSpots.AB.slice(0, 42);
     const b3SpotsForAB = this.parkingState.availableSpots.B3.slice(0, 2);
-    
-    this.parkingState.reservedSpots['AB_AB'] = abSpots;
-    this.parkingState.reservedSpots['AB_B3'] = b3SpotsForAB;
-    
+
+    this.parkingState.reservedSpots["AB_AB"] = abSpots;
+    this.parkingState.reservedSpots["AB_B3"] = b3SpotsForAB;
+
     // 從 availableSpots 中移除已預留的車位
-    this.parkingState.availableSpots.AB = this.parkingState.availableSpots.AB.slice(42);
-    this.parkingState.availableSpots.B3 = this.parkingState.availableSpots.B3.slice(2);
-    
+    this.parkingState.availableSpots.AB =
+      this.parkingState.availableSpots.AB.slice(42);
+    this.parkingState.availableSpots.B3 =
+      this.parkingState.availableSpots.B3.slice(2);
+
     // IJ棟預留：B1區40個
     const b1SpotsForIJ = this.parkingState.availableSpots.B1.slice(0, 40);
-    this.parkingState.reservedSpots['IJ_B1'] = b1SpotsForIJ;
-    
+    this.parkingState.reservedSpots["IJ_B1"] = b1SpotsForIJ;
+
     // 從 availableSpots 中移除已預留的車位
-    this.parkingState.availableSpots.B1 = this.parkingState.availableSpots.B1.slice(40);
+    this.parkingState.availableSpots.B1 =
+      this.parkingState.availableSpots.B1.slice(40);
   }
 
   private getNextUnit(): { building: Building; unit: string } | null {
@@ -385,7 +388,7 @@ export class MemStorage implements IStorage {
 
   private assignRandomSpot(building: Building, unit: string): string | null {
     const buildingGroup = this.getBuildingGroup(building);
-    
+
     // 檢查是否為受限戶別
     const hasRestrictedUnit = this.parkingState.restrictedUnits[unit];
     if (hasRestrictedUnit) {
@@ -400,10 +403,10 @@ export class MemStorage implements IStorage {
     }
 
     // 優先使用預留車位
-    const reservedKeys = Object.keys(this.parkingState.reservedSpots).filter(key => 
-      key.startsWith(buildingGroup + '_')
+    const reservedKeys = Object.keys(this.parkingState.reservedSpots).filter(
+      (key) => key.startsWith(buildingGroup + "_")
     );
-    
+
     for (const key of reservedKeys) {
       const reservedSpots = this.parkingState.reservedSpots[key];
       if (reservedSpots && reservedSpots.length > 0) {
@@ -419,9 +422,10 @@ export class MemStorage implements IStorage {
     const eligibleAreas = buildingConfig.eligibleAreas;
 
     // 篩選有剩餘車位的區域
-    const availableAreas = eligibleAreas.filter(area =>
-      this.parkingState.availableSpots[area] &&
-      this.parkingState.availableSpots[area].length > 0
+    const availableAreas = eligibleAreas.filter(
+      (area) =>
+        this.parkingState.availableSpots[area] &&
+        this.parkingState.availableSpots[area].length > 0
     );
 
     if (availableAreas.length === 0) {
@@ -431,15 +435,15 @@ export class MemStorage implements IStorage {
     // 隨機選擇區域
     const randomAreaIndex = Math.floor(Math.random() * availableAreas.length);
     const selectedArea = availableAreas[randomAreaIndex];
-    
+
     // 隨機選擇車位
     const spots = this.parkingState.availableSpots[selectedArea];
     const randomSpotIndex = Math.floor(Math.random() * spots.length);
     const selectedSpot = spots[randomSpotIndex];
-    
+
     // 從可用車位中移除
     spots.splice(randomSpotIndex, 1);
-    
+
     return selectedSpot;
   }
 
@@ -454,8 +458,6 @@ export class MemStorage implements IStorage {
       return building;
     }
   }
-
-
 }
 
 export const storage = new MemStorage();
