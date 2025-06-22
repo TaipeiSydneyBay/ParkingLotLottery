@@ -205,6 +205,10 @@ export class MemStorage implements IStorage {
       isStarted: false,
       isPaused: false,
     };
+    
+    this.initializeAvailableSpots();
+    this.initializeUnassignedUnits();
+    this.initializeReservedSpots();
   }
 
   // 產生時如果有遇到數字尾是 4 的，則減1之後加上 -1 再繼續產生
@@ -380,149 +384,78 @@ export class MemStorage implements IStorage {
   }
 
   private assignRandomSpot(building: Building, unit: string): string | null {
+    const buildingGroup = this.getBuildingGroup(building);
+    
+    // 檢查是否為受限戶別
+    const hasRestrictedUnit = this.parkingState.restrictedUnits[unit];
+    if (hasRestrictedUnit) {
+      const spots = this.parkingState.availableSpots[hasRestrictedUnit];
+      if (spots && spots.length > 0) {
+        const randomIndex = Math.floor(Math.random() * spots.length);
+        const selectedSpot = spots[randomIndex];
+        spots.splice(randomIndex, 1);
+        return selectedSpot;
+      }
+      return null;
+    }
+
+    // 優先使用預留車位
+    const reservedKeys = Object.keys(this.parkingState.reservedSpots).filter(key => 
+      key.startsWith(buildingGroup + '_')
+    );
+    
+    for (const key of reservedKeys) {
+      const reservedSpots = this.parkingState.reservedSpots[key];
+      if (reservedSpots && reservedSpots.length > 0) {
+        const randomIndex = Math.floor(Math.random() * reservedSpots.length);
+        const selectedSpot = reservedSpots[randomIndex];
+        reservedSpots.splice(randomIndex, 1);
+        return selectedSpot;
+      }
+    }
+
+    // 如果預留車位用完，使用一般車位
     const buildingConfig = this.getBuildingConfig(building);
     const eligibleAreas = buildingConfig.eligibleAreas;
 
-    // Filter to only include areas that still have spots available
-    const availableAreas = eligibleAreas.filter(
-      (area) =>
-        this.parkingState.availableSpots[area] &&
-        this.parkingState.availableSpots[area].length > 0
+    // 篩選有剩餘車位的區域
+    const availableAreas = eligibleAreas.filter(area =>
+      this.parkingState.availableSpots[area] &&
+      this.parkingState.availableSpots[area].length > 0
     );
 
     if (availableAreas.length === 0) {
       return null;
     }
 
-    const hasRestrictedUnit = this.parkingState.restrictedUnits[unit];
-
-    const currentSpotCounts = this.calculateSpotCounts();
-
-    let selectedArea;
-
-    if (hasRestrictedUnit) {
-      selectedArea = hasRestrictedUnit;
-    } else {
-      if (buildingConfig.spotCount) {
-        const spotCounts = Object.entries(buildingConfig.spotCount)
-          .map(([area, count]) => {
-            if (count > 0) {
-              const currentSpotCount = currentSpotCounts[area as ParkingArea];
-
-              return {
-                area: area as ParkingArea,
-                canSelected:
-                  currentSpotCount.available > currentSpotCount.reserved,
-              };
-            } else {
-              return {
-                area: area as ParkingArea,
-                canSelected: false,
-              };
-            }
-          })
-          .filter((item) => item.canSelected);
-
-        // Randomly select an area from available areas
-        const randomAreaIndex = Math.floor(Math.random() * spotCounts.length);
-
-        if (!spotCounts[randomAreaIndex]) {
-          console.error("No available areas found for selection.");
-        }
-
-        selectedArea = spotCounts[randomAreaIndex].area;
-      } else {
-        const spotCounts = availableAreas
-          .map((area) => {
-            const currentSpotCount = currentSpotCounts[area as ParkingArea];
-
-            return {
-              area: area as ParkingArea,
-              canSelected:
-                currentSpotCount.available > currentSpotCount.reserved,
-            };
-          })
-          .filter((item) => item.canSelected);
-
-        // Randomly select an area from available areas
-        const randomAreaIndex = Math.floor(Math.random() * spotCounts.length);
-
-        if (!spotCounts[randomAreaIndex]) {
-          console.error("No available areas found for selection.");
-        }
-
-        selectedArea = spotCounts[randomAreaIndex].area;
-      }
-    }
-
-    // Randomly select a spot from the selected area
+    // 隨機選擇區域
+    const randomAreaIndex = Math.floor(Math.random() * availableAreas.length);
+    const selectedArea = availableAreas[randomAreaIndex];
+    
+    // 隨機選擇車位
     const spots = this.parkingState.availableSpots[selectedArea];
-
-    // Randomly select a spot from the filtered spots
     const randomSpotIndex = Math.floor(Math.random() * spots.length);
     const selectedSpot = spots[randomSpotIndex];
-
-    // Remove the selected spot from availableSpots
-    this.parkingState.availableSpots[selectedArea].splice(randomSpotIndex, 1);
-
+    
+    // 從可用車位中移除
+    spots.splice(randomSpotIndex, 1);
+    
     return selectedSpot;
   }
 
-  private calculateSpotCounts(): Record<
-    ParkingArea,
-    {
-      assigned: number;
-      available: number;
-      reserved: number;
+  private getBuildingGroup(building: Building): string {
+    if (building === "A" || building === "B") {
+      return "AB";
+    } else if (building === "G" || building === "H") {
+      return "GH";
+    } else if (building === "I" || building === "J") {
+      return "IJ";
+    } else {
+      return building;
     }
-  > {
-    const counts: Record<
-      ParkingArea,
-      {
-        assigned: number;
-        available: number;
-        reserved: number;
-      }
-    > = {
-      AB: {
-        assigned: 0,
-        available: 0,
-        reserved: 0,
-      },
-      B3: {
-        assigned: 0,
-        available: 0,
-        reserved: 14,
-      },
-      B2: {
-        assigned: 0,
-        available: 0,
-        reserved: 34,
-      },
-      B1: {
-        assigned: 0,
-        available: 0,
-        reserved: 84,
-      },
-    };
-
-    // Calculate assigned spots
-    this.parkingState.assignments.forEach((assignment) => {
-      const area = assignment.spot.split("-")[0] as ParkingArea;
-
-      counts[area].assigned++;
-    });
-
-    // Calculate available spots
-    Object.keys(this.parkingState.availableSpots).forEach((area) => {
-      const parkingArea = area as ParkingArea;
-
-      counts[parkingArea].available =
-        this.parkingState.availableSpots[parkingArea].length;
-    });
-
-    return counts;
   }
+
+
 }
 
 export const storage = new MemStorage();
