@@ -6,25 +6,44 @@ const RemainingSpots: React.FC = () => {
   const { state } = useParkingContext();
 
   // 按區域分組並統計剩餘車位
-  const getAllSpotsByArea = () => {
+  const getRemainingSpotsByArea = () => {
     const areas = ["AB", "B3", "B2", "B1"] as const;
-    const result: Record<string, { total: number; spots: string[] }> = {};
+    const result: Record<string, { 
+      totalRemaining: number; 
+      availableForDraw: number; 
+      spots: string[] 
+    }> = {};
 
     areas.forEach((area) => {
-      // 獲取該區域的一般可用車位
-      const allSpots = state.allSpots[area] || [];
-
+      // 獲取該區域的可用車位（可抽籤的）
+      const availableSpots = state.availableSpots[area] || [];
+      
+      // 獲取該區域的預留車位
+      const reservedSpots: string[] = [];
+      Object.entries(state.reservedSpots || {}).forEach(([key, spots]) => {
+        if (key.includes('_' + area)) {
+          reservedSpots.push(...spots);
+        }
+      });
+      
       // 合併所有剩餘車位
+      const allRemainingSpots = [...availableSpots, ...reservedSpots];
+      
       result[area] = {
-        total: allSpots.length,
-        spots: allSpots,
+        totalRemaining: allRemainingSpots.length,
+        availableForDraw: availableSpots.length,
+        spots: allRemainingSpots.sort((a, b) => {
+          const numA = parseInt(a.split('-')[1]);
+          const numB = parseInt(b.split('-')[1]);
+          return numA - numB;
+        })
       };
     });
 
     return result;
   };
 
-  const allSpots = getAllSpotsByArea();
+  const remainingSpots = getRemainingSpotsByArea();
 
   // 取得區域的樓層分布
   const getFloorDistribution = (spots: string[]) => {
@@ -48,17 +67,25 @@ const RemainingSpots: React.FC = () => {
   return (
     <Card className="w-full">
       <div className="bg-primary text-white p-4">
-        <h2 className="text-xl font-bold">所有車位詳細資訊</h2>
+        <h2 className="text-xl font-bold">剩餘車位詳細資訊</h2>
       </div>
 
       <div className="p-4 space-y-6">
-        {Object.entries(allSpots).map(([area, data]) => (
+        {Object.entries(remainingSpots).map(([area, data]) => (
           <div key={area} className="border rounded-lg p-4">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-lg font-semibold text-gray-800">{area}區</h3>
+              <div className="flex space-x-2">
+                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                  可抽 {data.availableForDraw} 個
+                </span>
+                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                  總剩餘 {data.totalRemaining} 個
+                </span>
+              </div>
             </div>
 
-            {data.total > 0 ? (
+            {data.totalRemaining > 0 ? (
               <div className="space-y-3">
                 {Object.entries(getFloorDistribution(data.spots)).map(
                   ([floor, spots]) => (
