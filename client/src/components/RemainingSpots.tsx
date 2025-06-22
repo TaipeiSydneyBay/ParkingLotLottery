@@ -10,14 +10,29 @@ const RemainingSpots: React.FC = () => {
     const areas = ["AB", "B3", "B2", "B1"] as const;
     const result: Record<string, { total: number; spots: string[] }> = {};
 
+    const allBadSpots = state.badSpots || [];
+    const allFriendlySpots = state.friendlySpots || [];
+
     areas.forEach((area) => {
       // 獲取該區域的一般可用車位
       const availableSpots = state.availableSpots[area] || [];
 
+      const areaBadSpots = allBadSpots.filter((spot) => spot.startsWith(area));
+
+      const areaFriendlySpots = allFriendlySpots.filter((spot) =>
+        spot.startsWith(area)
+      );
+
+      const allSpots = [
+        ...availableSpots,
+        ...areaFriendlySpots,
+        ...areaBadSpots,
+      ];
+
       // 合併所有剩餘車位
       result[area] = {
-        total: availableSpots.length,
-        spots: availableSpots.sort((a, b) => {
+        total: allSpots.length,
+        spots: allSpots.sort((a, b) => {
           const numA = parseInt(a.split("-")[1]);
           const numB = parseInt(b.split("-")[1]);
 

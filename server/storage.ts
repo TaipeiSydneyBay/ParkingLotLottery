@@ -26,6 +26,22 @@ const BAD_SPOTS = [
   "B1-573",
 ];
 
+const FRIENDLY_SPOTS = [
+  "AB-25",
+  "B3-67",
+  "B3-68",
+  "B3-70",
+  "B3-81",
+  "B2-341",
+  "B2-372",
+  "B2-490",
+  "B2-491",
+  "B1-568",
+  "B1-569",
+  "B1-573-1",
+  "B1-575",
+];
+
 const RESTRICTED_UNITS: Record<string, ParkingArea> = {
   "E8-1F": "B2",
   "E7-1F": "B2",
@@ -85,6 +101,8 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
+      friendlySpots: FRIENDLY_SPOTS,
+      badSpots: BAD_SPOTS,
       restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
       currentUnit: null,
@@ -141,7 +159,11 @@ export class MemStorage implements IStorage {
     assignment: Assignment | null;
     state: ParkingState;
   }> {
-    if (!this.parkingState.isStarted || this.parkingState.isPaused || this.parkingState.isCompleted) {
+    if (
+      !this.parkingState.isStarted ||
+      this.parkingState.isPaused ||
+      this.parkingState.isCompleted
+    ) {
       return { assignment: null, state: this.parkingState };
     }
 
@@ -210,6 +232,8 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
+      friendlySpots: FRIENDLY_SPOTS,
+      badSpots: BAD_SPOTS,
       restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
       currentUnit: null,
@@ -232,7 +256,7 @@ export class MemStorage implements IStorage {
     for (let i = 1; i <= 43; i++) {
       const spot = i % 10 === 4 ? `AB-${i - 1}-1` : `AB-${i}`; // 尾數是 4 的，減1後加上 -1
 
-      if (["AB-25"].includes(spot)) {
+      if (FRIENDLY_SPOTS.includes(spot)) {
         continue; // 排除友善車位
       }
 
@@ -249,7 +273,7 @@ export class MemStorage implements IStorage {
     for (let i = 43; i <= 144; i++) {
       const spot = i % 10 === 4 ? `B3-${i - 1}-1` : `B3-${i}`; // 尾數是 4 的，減1後加上 -1
 
-      if (["B3-67", "B3-68", "B3-70", "B3-81"].includes(spot)) {
+      if (FRIENDLY_SPOTS.includes(spot)) {
         continue; // 排除友善車位
       }
 
@@ -266,7 +290,7 @@ export class MemStorage implements IStorage {
     for (let i = 145; i <= 491; i++) {
       const spot = i % 10 === 4 ? `B2-${i - 1}-1` : `B2-${i}`; // 尾數是 4 的，減1後加上 -1
 
-      if (["B2-341", "B2-372", "B2-490", "B2-491"].includes(spot)) {
+      if (FRIENDLY_SPOTS.includes(spot)) {
         continue; // 排除友善車位
       }
 
@@ -283,7 +307,7 @@ export class MemStorage implements IStorage {
     for (let i = 492; i <= 619; i++) {
       const spot = i % 10 === 4 ? `B1-${i - 1}-1` : `B1-${i}`; // 尾數是 4 的，減1後加上 -1
 
-      if (["B1-568", "B1-569", "B1-573-1", "B1-575"].includes(spot)) {
+      if (FRIENDLY_SPOTS.includes(spot)) {
         continue; // 排除友善車位
       }
 
@@ -368,6 +392,7 @@ export class MemStorage implements IStorage {
     }
 
     const selectedIndex = Math.floor(Math.random() * allUnits.length);
+    // const selectedIndex = 0; // For testing, always select the first unit
     const selected = allUnits[selectedIndex];
 
     // Remove the selected unit from unassignedUnits
@@ -422,10 +447,22 @@ export class MemStorage implements IStorage {
 
     for (const key of reservedKeys) {
       const reservedSpots = this.parkingState.reservedSpots[key];
+
       if (reservedSpots && reservedSpots.length > 0) {
         const randomIndex = Math.floor(Math.random() * reservedSpots.length);
         const selectedSpot = reservedSpots[randomIndex];
+
         reservedSpots.splice(randomIndex, 1);
+
+        // 從 availableSpots 中移除已選擇的車位
+        const area = key.split("_")[1]; // 取得區域名稱
+        const spots = this.parkingState.availableSpots[area as ParkingArea];
+        const spotIndex = spots.indexOf(selectedSpot);
+
+        if (spotIndex > -1) {
+          spots.splice(spotIndex, 1);
+        }
+
         return selectedSpot;
       }
     }
