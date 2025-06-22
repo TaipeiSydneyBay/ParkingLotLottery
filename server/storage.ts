@@ -216,6 +216,7 @@ export class MemStorage implements IStorage {
       currentSpot: null,
       isStarted: false,
       isPaused: false,
+      isCompleted: false,
     };
 
     this.initializeAvailableSpots();
