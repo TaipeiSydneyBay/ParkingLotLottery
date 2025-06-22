@@ -378,11 +378,12 @@ export class MemStorage implements IStorage {
         const spotCounts = Object.entries(buildingConfig.spotCount)
           .map(([area, count]) => {
             if (count > 0) {
+              const currentSpotCount = currentSpotCounts[area as ParkingArea];
+
               return {
                 area: area as ParkingArea,
                 canSelected:
-                  currentSpotCounts[area as ParkingArea].available >
-                  currentSpotCounts[area as ParkingArea].reserved,
+                  currentSpotCount.available > currentSpotCount.reserved,
               };
             } else {
               return {
@@ -404,11 +405,12 @@ export class MemStorage implements IStorage {
       } else {
         const spotCounts = availableAreas
           .map((area) => {
+            const currentSpotCount = currentSpotCounts[area as ParkingArea];
+
             return {
               area: area as ParkingArea,
               canSelected:
-                currentSpotCounts[area as ParkingArea].available >
-                currentSpotCounts[area as ParkingArea].reserved,
+                currentSpotCount.available > currentSpotCount.reserved,
             };
           })
           .filter((item) => item.canSelected);
@@ -439,27 +441,48 @@ export class MemStorage implements IStorage {
 
   private calculateSpotCounts(): Record<
     ParkingArea,
-    { available: number; reserved: number }
+    {
+      assigned: number;
+      available: number;
+      reserved: number;
+    }
   > {
-    const counts: Record<ParkingArea, { available: number; reserved: number }> =
+    const counts: Record<
+      ParkingArea,
       {
-        AB: {
-          available: 0,
-          reserved: 0,
-        },
-        B3: {
-          available: 0,
-          reserved: 14,
-        },
-        B2: {
-          available: 0,
-          reserved: 34,
-        },
-        B1: {
-          available: 0,
-          reserved: 84,
-        },
-      };
+        assigned: number;
+        available: number;
+        reserved: number;
+      }
+    > = {
+      AB: {
+        assigned: 0,
+        available: 0,
+        reserved: 0,
+      },
+      B3: {
+        assigned: 0,
+        available: 0,
+        reserved: 14,
+      },
+      B2: {
+        assigned: 0,
+        available: 0,
+        reserved: 34,
+      },
+      B1: {
+        assigned: 0,
+        available: 0,
+        reserved: 84,
+      },
+    };
+
+    // Calculate assigned spots
+    this.parkingState.assignments.forEach((assignment) => {
+      const area = assignment.spot.split("-")[0] as ParkingArea;
+
+      counts[area].assigned++;
+    });
 
     // Calculate available spots
     Object.keys(this.parkingState.availableSpots).forEach((area) => {
