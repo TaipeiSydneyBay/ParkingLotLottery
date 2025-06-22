@@ -72,6 +72,7 @@ export class MemStorage implements IStorage {
         B2: [],
         B1: [],
       },
+      reservedSpots: {},
       unassignedUnits: {
         A: [],
         B: [],
@@ -91,6 +92,10 @@ export class MemStorage implements IStorage {
       isStarted: false,
       isPaused: false,
     };
+    
+    this.initializeAvailableSpots();
+    this.initializeUnassignedUnits();
+    this.initializeReservedSpots();
   }
 
   // User methods (keeping these from the original storage interface)
@@ -180,6 +185,7 @@ export class MemStorage implements IStorage {
         B2: [],
         B1: [],
       },
+      reservedSpots: {},
       unassignedUnits: {
         A: [],
         B: [],
@@ -300,6 +306,29 @@ export class MemStorage implements IStorage {
     });
 
     this.parkingState.unassignedUnits = unassignedUnits;
+  }
+
+  // 初始化預留車位機制
+  private initializeReservedSpots(): void {
+    // 根據 buildingConfigs 中有 spotCount 的配置進行預留
+    
+    // AB棟預留：AB區42個 + B3區2個
+    const abSpots = this.parkingState.availableSpots.AB.slice(0, 42);
+    const b3SpotsForAB = this.parkingState.availableSpots.B3.slice(0, 2);
+    
+    this.parkingState.reservedSpots['AB_AB'] = abSpots;
+    this.parkingState.reservedSpots['AB_B3'] = b3SpotsForAB;
+    
+    // 從 availableSpots 中移除已預留的車位
+    this.parkingState.availableSpots.AB = this.parkingState.availableSpots.AB.slice(42);
+    this.parkingState.availableSpots.B3 = this.parkingState.availableSpots.B3.slice(2);
+    
+    // IJ棟預留：B1區40個
+    const b1SpotsForIJ = this.parkingState.availableSpots.B1.slice(0, 40);
+    this.parkingState.reservedSpots['IJ_B1'] = b1SpotsForIJ;
+    
+    // 從 availableSpots 中移除已預留的車位
+    this.parkingState.availableSpots.B1 = this.parkingState.availableSpots.B1.slice(40);
   }
 
   private getNextUnit(): { building: Building; unit: string } | null {
