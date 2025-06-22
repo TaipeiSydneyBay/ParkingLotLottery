@@ -66,6 +66,9 @@ const RemainingSpots: React.FC = () => {
                       <div className="grid grid-cols-8 gap-1">
                         {spots.map((spot) => {
                           const fullSpotId = `${area}-${spot}`;
+                          const alreadyAssigned = state.assignments.some(
+                            (assignment) => assignment.spot === fullSpotId
+                          );
                           const isBad = state.badSpots.includes(fullSpotId);
                           const isFriendly =
                             state.friendlySpots.includes(fullSpotId);
@@ -75,9 +78,11 @@ const RemainingSpots: React.FC = () => {
                               key={spot}
                               className={
                                 (isBad
-                                  ? "bg-red-100"
+                                  ? "bg-red-300"
                                   : isFriendly
-                                  ? "bg-green-100"
+                                  ? "bg-green-300"
+                                  : alreadyAssigned
+                                  ? "bg-gray-300"
                                   : "bg-white") +
                                 ` border border-gray-200 rounded px-1 py-1 text-center text-xs font-mono`
                               }

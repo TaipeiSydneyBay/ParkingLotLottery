@@ -117,10 +117,6 @@ export class MemStorage implements IStorage {
       isPaused: false,
       isCompleted: false,
     };
-
-    this.initializeAvailableSpots();
-    this.initializeUnassignedUnits();
-    this.initializeReservedSpots();
   }
 
   // User methods (keeping these from the original storage interface)
@@ -150,6 +146,7 @@ export class MemStorage implements IStorage {
     // Initialize the state
     this.initializeAvailableSpots();
     this.initializeUnassignedUnits();
+    this.initializeReservedSpots();
 
     this.parkingState.isStarted = true;
     this.parkingState.isPaused = false;
