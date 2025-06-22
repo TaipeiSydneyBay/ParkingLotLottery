@@ -10,6 +10,13 @@ import {
 } from "@shared/schema";
 import originalUnits from "./units.json";
 
+const RESERVED_SPOT_COUNT = {
+  AB: 0,
+  B3: 14,
+  B2: 34,
+  B1: 84,
+};
+
 const BAD_SPOTS = [
   "B3-82",
   "B3-143-1",
