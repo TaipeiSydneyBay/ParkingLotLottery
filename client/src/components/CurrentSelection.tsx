@@ -45,7 +45,7 @@ const CurrentSelection: React.FC = () => {
         timerRef.current = null;
       }
     };
-  }, [state.isPaused, state.isStarted, drawNext]);
+  }, [state.isPaused, state.isStarted, state.isCompleted, drawNext]);
 
   return (
     <div className="md:w-1/2 bg-white rounded-xl shadow-lg overflow-hidden">
@@ -73,7 +73,12 @@ const CurrentSelection: React.FC = () => {
         </div>
 
         <div className="mt-8 text-center">
-          {state.isPaused ? (
+          {state.isCompleted ? (
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600 mb-4">🎉 抽籤完成！</div>
+              <div className="text-lg text-gray-600">所有住戶都已分配到停車位</div>
+            </div>
+          ) : state.isPaused ? (
             <Button
               onClick={drawNext}
               className="bg-accent hover:bg-orange-600 text-white text-xl font-bold py-4 px-8 rounded-lg shadow-md transition-colors h-auto"

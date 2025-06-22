@@ -142,16 +142,23 @@ export function ParkingProvider({ children }: { children: React.ReactNode }) {
           } 
         });
         dispatch({ type: 'ADD_ASSIGNMENT', payload: data.assignment });
-      } else {
-        console.warn('No more units to assign');
-        // toast({
-        //   title: "No more units",
-        //   description: "All units have been assigned parking spots.",
-        // });
       }
       
       // Update the overall state
       dispatch({ type: 'SET_STATE', payload: data.state });
+      
+      // Check if completed
+      if (data.state.isCompleted) {
+        toast({
+          title: "抽籤完成",
+          description: "所有住戶都已分配到停車位！",
+        });
+        return;
+      }
+      
+      if (!data.assignment) {
+        console.warn('No more units to assign');
+      }
     } catch (error) {
       console.error('Failed to draw next:', error);
       toast({
