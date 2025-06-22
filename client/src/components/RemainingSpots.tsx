@@ -72,15 +72,28 @@ const RemainingSpots: React.FC = () => {
                   ([floor, spots]) => (
                     <div key={floor} className="bg-gray-50 rounded-lg p-3">
                       <div className="grid grid-cols-8 gap-1">
-                        {spots.map((spot) => (
-                          <div
-                            key={spot}
-                            className="bg-white border border-gray-200 rounded px-1 py-1 text-center text-xs font-mono"
-                            title={spot}
-                          >
-                            {spot}
-                          </div>
-                        ))}
+                        {spots.map((spot) => {
+                          const fullSpotId = `${area}-${spot}`;
+                          const isBad = (state.badSpots || []).includes(fullSpotId);
+                          const isFriendly = (state.friendlySpots || []).includes(fullSpotId);
+                          
+                          let bgColor = 'bg-white';
+                          if (isBad) {
+                            bgColor = 'bg-red-100';
+                          } else if (isFriendly) {
+                            bgColor = 'bg-green-100';
+                          }
+                          
+                          return (
+                            <div
+                              key={spot}
+                              className={`${bgColor} border border-gray-200 rounded px-1 py-1 text-center text-xs font-mono`}
+                              title={fullSpotId}
+                            >
+                              {spot}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )
@@ -97,12 +110,27 @@ const RemainingSpots: React.FC = () => {
         <div className="border-t pt-4">
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <h4 className="font-medium text-yellow-800 mb-2">說明</h4>
-            <ul className="text-sm text-yellow-700 space-y-1">
-              <li>• 數字顯示為車位號碼，點擊可查看完整編號</li>
-              <li>• 包含一般可用車位和各棟預留車位</li>
-              <li>• 已排除友善車位及不適合停車的位置</li>
-              <li>• 樓層分布為估算值，實際以現場標示為準</li>
-            </ul>
+            <div className="space-y-3">
+              <ul className="text-sm text-yellow-700 space-y-1">
+                <li>• 數字顯示為車位號碼，滑鼠移至車位上可查看完整編號</li>
+                <li>• 包含一般可用車位和各棟預留車位</li>
+                <li>• 樓層分布為估算值，實際以現場標示為準</li>
+              </ul>
+              <div className="flex space-x-4 text-sm flex-wrap">
+                <div className="flex items-center space-x-1">
+                  <div className="w-4 h-4 bg-white border border-gray-200 rounded"></div>
+                  <span className="text-gray-600">一般車位</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="w-4 h-4 bg-green-100 border border-gray-200 rounded"></div>
+                  <span className="text-gray-600">友善車位</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="w-4 h-4 bg-red-100 border border-gray-200 rounded"></div>
+                  <span className="text-gray-600">不適合車位</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
