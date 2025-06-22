@@ -470,7 +470,8 @@ export class MemStorage implements IStorage {
     const availableAreas = eligibleAreas.filter(
       (area) =>
         this.parkingState.availableSpots[area] &&
-        this.parkingState.availableSpots[area].length > 0
+        this.parkingState.availableSpots[area].length >
+          RESERVED_SPOT_COUNT[area]
     );
 
     if (availableAreas.length === 0) {
