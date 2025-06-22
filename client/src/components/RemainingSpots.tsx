@@ -6,30 +6,25 @@ const RemainingSpots: React.FC = () => {
   const { state } = useParkingContext();
 
   // 按區域分組並統計剩餘車位
-  const getRemainingSpotsByArea = () => {
+  const getAllSpotsByArea = () => {
     const areas = ["AB", "B3", "B2", "B1"] as const;
     const result: Record<string, { total: number; spots: string[] }> = {};
 
     areas.forEach((area) => {
       // 獲取該區域的一般可用車位
-      const availableSpots = state.availableSpots[area] || [];
+      const allSpots = state.allSpots[area] || [];
 
       // 合併所有剩餘車位
       result[area] = {
-        total: availableSpots.length,
-        spots: availableSpots.sort((a, b) => {
-          const numA = parseInt(a.split("-")[1]);
-          const numB = parseInt(b.split("-")[1]);
-
-          return numA - numB;
-        }),
+        total: allSpots.length,
+        spots: allSpots,
       };
     });
 
     return result;
   };
 
-  const remainingSpots = getRemainingSpotsByArea();
+  const allSpots = getAllSpotsByArea();
 
   // 取得區域的樓層分布
   const getFloorDistribution = (spots: string[]) => {
@@ -53,17 +48,14 @@ const RemainingSpots: React.FC = () => {
   return (
     <Card className="w-full">
       <div className="bg-primary text-white p-4">
-        <h2 className="text-xl font-bold">剩餘車位詳細資訊</h2>
+        <h2 className="text-xl font-bold">所有車位詳細資訊</h2>
       </div>
 
       <div className="p-4 space-y-6">
-        {Object.entries(remainingSpots).map(([area, data]) => (
+        {Object.entries(allSpots).map(([area, data]) => (
           <div key={area} className="border rounded-lg p-4">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-lg font-semibold text-gray-800">{area}區</h3>
-              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                剩餘 {data.total} 個
-              </span>
             </div>
 
             {data.total > 0 ? (
@@ -74,20 +66,21 @@ const RemainingSpots: React.FC = () => {
                       <div className="grid grid-cols-8 gap-1">
                         {spots.map((spot) => {
                           const fullSpotId = `${area}-${spot}`;
-                          const isBad = (state.badSpots || []).includes(fullSpotId);
-                          const isFriendly = (state.friendlySpots || []).includes(fullSpotId);
-                          
-                          let bgColor = 'bg-white';
-                          if (isBad) {
-                            bgColor = 'bg-red-100';
-                          } else if (isFriendly) {
-                            bgColor = 'bg-green-100';
-                          }
-                          
+                          const isBad = state.badSpots.includes(fullSpotId);
+                          const isFriendly =
+                            state.friendlySpots.includes(fullSpotId);
+
                           return (
                             <div
                               key={spot}
-                              className={`${bgColor} border border-gray-200 rounded px-1 py-1 text-center text-xs font-mono`}
+                              className={
+                                (isBad
+                                  ? "bg-red-100"
+                                  : isFriendly
+                                  ? "bg-green-100"
+                                  : "bg-white") +
+                                ` border border-gray-200 rounded px-1 py-1 text-center text-xs font-mono`
+                              }
                               title={fullSpotId}
                             >
                               {spot}

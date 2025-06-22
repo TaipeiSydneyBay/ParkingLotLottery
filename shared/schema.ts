@@ -99,10 +99,13 @@ export interface Assignment {
 }
 
 export interface ParkingState {
+  allSpots: Record<ParkingArea, string[]>;
   availableSpots: Record<ParkingArea, string[]>;
   reservedSpots: Record<string, string[]>; // key: "AB_AB", "IJ_B1" etc, value: spot IDs
   unassignedUnits: Record<Building, string[]>;
   assignments: Assignment[];
+  badSpots: string[];
+  friendlySpots: string[];
   restrictedUnits: Record<string, ParkingArea>;
   currentUnit: string | null;
   currentSpot: string | null;

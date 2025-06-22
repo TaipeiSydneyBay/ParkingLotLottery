@@ -26,6 +26,22 @@ const BAD_SPOTS = [
   "B1-573",
 ];
 
+const FRIENDLY_SPOTS = [
+  "AB-25",
+  "B3-67",
+  "B3-68",
+  "B3-70",
+  "B3-81",
+  "B2-341",
+  "B2-372",
+  "B2-490",
+  "B2-491",
+  "B1-568",
+  "B1-569",
+  "B1-573-1",
+  "B1-575",
+];
+
 const RESTRICTED_UNITS: Record<string, ParkingArea> = {
   "E8-1F": "B2",
   "E7-1F": "B2",
@@ -66,6 +82,12 @@ export class MemStorage implements IStorage {
 
     // Initialize parking state
     this.parkingState = {
+      allSpots: {
+        AB: [],
+        B3: [],
+        B2: [],
+        B1: [],
+      },
       availableSpots: {
         AB: [],
         B3: [],
@@ -85,6 +107,8 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
+      badSpots: BAD_SPOTS,
+      friendlySpots: FRIENDLY_SPOTS,
       restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
       currentUnit: null,
@@ -141,7 +165,11 @@ export class MemStorage implements IStorage {
     assignment: Assignment | null;
     state: ParkingState;
   }> {
-    if (!this.parkingState.isStarted || this.parkingState.isPaused || this.parkingState.isCompleted) {
+    if (
+      !this.parkingState.isStarted ||
+      this.parkingState.isPaused ||
+      this.parkingState.isCompleted
+    ) {
       return { assignment: null, state: this.parkingState };
     }
 
@@ -191,6 +219,12 @@ export class MemStorage implements IStorage {
 
   async resetSelection(): Promise<void> {
     this.parkingState = {
+      allSpots: {
+        AB: [],
+        B3: [],
+        B2: [],
+        B1: [],
+      },
       availableSpots: {
         AB: [],
         B3: [],
@@ -210,6 +244,8 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
+      badSpots: BAD_SPOTS,
+      friendlySpots: FRIENDLY_SPOTS,
       restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
       currentUnit: null,
@@ -232,12 +268,10 @@ export class MemStorage implements IStorage {
     for (let i = 1; i <= 43; i++) {
       const spot = i % 10 === 4 ? `AB-${i - 1}-1` : `AB-${i}`; // 尾數是 4 的，減1後加上 -1
 
-      if (["AB-25"].includes(spot)) {
-        continue; // 排除友善車位
-      }
+      this.parkingState.allSpots.AB.push(spot);
 
-      if (BAD_SPOTS.includes(spot)) {
-        continue; // 排除不好停的車位
+      if (FRIENDLY_SPOTS.includes(spot) || BAD_SPOTS.includes(spot)) {
+        continue; // 排除友善車位和不好停的車位
       }
 
       abSpots.push(spot);
@@ -249,12 +283,10 @@ export class MemStorage implements IStorage {
     for (let i = 43; i <= 144; i++) {
       const spot = i % 10 === 4 ? `B3-${i - 1}-1` : `B3-${i}`; // 尾數是 4 的，減1後加上 -1
 
-      if (["B3-67", "B3-68", "B3-70", "B3-81"].includes(spot)) {
-        continue; // 排除友善車位
-      }
+      this.parkingState.allSpots.B3.push(spot);
 
-      if (BAD_SPOTS.includes(spot)) {
-        continue; // 排除不好停的車位
+      if (FRIENDLY_SPOTS.includes(spot) || BAD_SPOTS.includes(spot)) {
+        continue; // 排除友善車位和不好停的車位
       }
 
       b3Spots.push(spot);
@@ -266,12 +298,10 @@ export class MemStorage implements IStorage {
     for (let i = 145; i <= 491; i++) {
       const spot = i % 10 === 4 ? `B2-${i - 1}-1` : `B2-${i}`; // 尾數是 4 的，減1後加上 -1
 
-      if (["B2-341", "B2-372", "B2-490", "B2-491"].includes(spot)) {
-        continue; // 排除友善車位
-      }
+      this.parkingState.allSpots.B2.push(spot);
 
-      if (BAD_SPOTS.includes(spot)) {
-        continue; // 排除不好停的車位
+      if (FRIENDLY_SPOTS.includes(spot) || BAD_SPOTS.includes(spot)) {
+        continue; // 排除友善車位和不好停的車位
       }
 
       b2Spots.push(spot);
@@ -283,12 +313,10 @@ export class MemStorage implements IStorage {
     for (let i = 492; i <= 619; i++) {
       const spot = i % 10 === 4 ? `B1-${i - 1}-1` : `B1-${i}`; // 尾數是 4 的，減1後加上 -1
 
-      if (["B1-568", "B1-569", "B1-573-1", "B1-575"].includes(spot)) {
-        continue; // 排除友善車位
-      }
+      this.parkingState.allSpots.B1.push(spot);
 
-      if (BAD_SPOTS.includes(spot)) {
-        continue; // 排除不好停的車位
+      if (FRIENDLY_SPOTS.includes(spot) || BAD_SPOTS.includes(spot)) {
+        continue; // 排除友善車位和不好停的車位
       }
 
       b1Spots.push(spot);
