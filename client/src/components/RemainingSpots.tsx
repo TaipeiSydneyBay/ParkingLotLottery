@@ -58,50 +58,44 @@ const RemainingSpots: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-800">{area}區</h3>
             </div>
 
-            {data.total > 0 ? (
-              <div className="space-y-3">
-                {Object.entries(getFloorDistribution(data.spots)).map(
-                  ([floor, spots]) => (
-                    <div key={floor} className="bg-gray-50 rounded-lg p-3">
-                      <div className="grid grid-cols-8 gap-1">
-                        {spots.map((spot) => {
-                          const fullSpotId = `${area}-${spot}`;
-                          const alreadyAssigned = state.assignments.some(
-                            (assignment) => assignment.spot === fullSpotId
-                          );
-                          const isBad = state.badSpots.includes(fullSpotId);
-                          const isFriendly =
-                            state.friendlySpots.includes(fullSpotId);
+            <div className="space-y-3">
+              {Object.entries(getFloorDistribution(data.spots)).map(
+                ([floor, spots]) => (
+                  <div key={floor} className="bg-gray-50 rounded-lg p-3">
+                    <div className="grid grid-cols-8 gap-1">
+                      {spots.map((spot) => {
+                        const fullSpotId = `${area}-${spot}`;
+                        const alreadyAssigned = state.assignments.some(
+                          (assignment) => assignment.spot === fullSpotId
+                        );
+                        const isBad = state.badSpots.includes(fullSpotId);
+                        const isFriendly =
+                          state.friendlySpots.includes(fullSpotId);
 
-                          return (
-                            <div
-                              key={spot}
-                              className={
-                                (isBad
-                                  ? "bg-red-300"
-                                  : isFriendly
-                                  ? "bg-green-300"
-                                  : alreadyAssigned
-                                  ? "bg-gray-300"
-                                  : "bg-white") +
-                                ` border border-gray-200 rounded px-1 py-1 text-center text-xs font-mono`
-                              }
-                              title={fullSpotId}
-                            >
-                              {spot}
-                            </div>
-                          );
-                        })}
-                      </div>
+                        return (
+                          <div
+                            key={spot}
+                            className={
+                              (isBad
+                                ? "bg-red-300"
+                                : isFriendly
+                                ? "bg-green-300"
+                                : alreadyAssigned
+                                ? "bg-gray-300"
+                                : "bg-white") +
+                              ` border border-gray-200 rounded px-1 py-1 text-center text-xs font-mono`
+                            }
+                            title={fullSpotId}
+                          >
+                            {spot}
+                          </div>
+                        );
+                      })}
                     </div>
-                  )
-                )}
-              </div>
-            ) : (
-              <div className="text-center text-gray-500 py-4">
-                此區域已無剩餘車位
-              </div>
-            )}
+                  </div>
+                )
+              )}
+            </div>
           </div>
         ))}
 
