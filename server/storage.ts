@@ -12,8 +12,8 @@ import originalUnits from "./units.json";
 
 const RESERVED_SPOT_COUNT = {
   AB: 0,
-  B3: 14,
-  B2: 34,
+  B3: 15,
+  B2: 31,
   B1: 84,
 };
 
@@ -284,7 +284,7 @@ export class MemStorage implements IStorage {
     // 生成 B3 區車位 (43-1到144號，排除 67, 68, 70, 81 號友善車位)
     const b3Spots = [];
 
-    for (let i = 43; i <= 144; i++) {
+    for (let i = 44; i <= 144; i++) {
       const spot = i % 10 === 4 ? `B3-${i - 1}-1` : `B3-${i}`; // 尾數是 4 的，減1後加上 -1
 
       this.parkingState.allSpots.B3.push(spot);
