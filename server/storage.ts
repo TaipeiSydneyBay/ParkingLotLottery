@@ -195,6 +195,10 @@ export class MemStorage implements IStorage {
     // Assign a random spot to the unit
     const assignedSpot = this.assignRandomSpot(building, unit);
 
+    console.log(
+      `${unit} => ${assignedSpot} (${this.parkingState.availableSpots.AB.length} AB, ${this.parkingState.availableSpots.B3.length} B3, ${this.parkingState.availableSpots.B2.length} B2, ${this.parkingState.availableSpots.B1.length} B1)`
+    );
+
     if (!assignedSpot) {
       // 無法分配車位時也標記為完成
       this.parkingState.isCompleted = true;
