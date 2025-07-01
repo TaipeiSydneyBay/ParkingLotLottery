@@ -9,6 +9,7 @@ const ResultsOverview: React.FC = () => {
 
   // Calculate totals
   const totalAssigned = state.assignments.length;
+  const totalSecondAssigned = state.secondRoundAssignments?.length || 0;
   const totalRemaining = Object.values(state.availableSpots).reduce(
     (sum, spots) => sum + spots.length, 
     0
@@ -16,6 +17,10 @@ const ResultsOverview: React.FC = () => {
 
   // Filter assignments by building
   const filteredAssignments = state.assignments.filter(
+    assignment => filteredBuilding === 'all' || assignment.building === filteredBuilding
+  );
+  
+  const filteredSecondAssignments = (state.secondRoundAssignments || []).filter(
     assignment => filteredBuilding === 'all' || assignment.building === filteredBuilding
   );
   
@@ -107,9 +112,15 @@ const ResultsOverview: React.FC = () => {
       <div className="p-4">
         <div className="bg-gray-100 p-3 rounded-lg mb-4">
           <div className="flex justify-between mb-2">
-            <span className="text-gray-600">已分配停車位:</span>
+            <span className="text-gray-600">第一輪已分配:</span>
             <span className="font-bold">{totalAssigned}</span>
           </div>
+          {(state.isSecondRound || totalSecondAssigned > 0) && (
+            <div className="flex justify-between mb-2">
+              <span className="text-gray-600">第二輪已分配:</span>
+              <span className="font-bold">{totalSecondAssigned}</span>
+            </div>
+          )}
           <div className="flex justify-between mb-3">
             <span className="text-gray-600">剩餘停車位:</span>
             <span className="font-bold">{totalRemaining}</span>
@@ -127,27 +138,61 @@ const ResultsOverview: React.FC = () => {
           </div>
         </div>
         
-        <div className="h-[550px] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3 pr-2">
-          {filteredAssignments.length > 0 ? (
-            filteredAssignments.map((assignment, index) => (
-              <div 
-                key={index} 
-                className="bg-green-50 border border-green-200 rounded-lg p-3 flex justify-between shadow-sm"
-                data-building={assignment.building}
-              >
-                <div>
-                  <div className="text-sm text-gray-500">戶別</div>
-                  <div className="font-bold">{assignment.unit}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm text-gray-500">停車位</div>
-                  <div className="font-bold text-success">{assignment.spot}</div>
-                </div>
+        <div className="h-[550px] overflow-y-auto space-y-4 pr-2">
+          {/* First Round Assignments */}
+          {filteredAssignments.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-3">第一輪分配</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {filteredAssignments.map((assignment, index) => (
+                  <div 
+                    key={`first-${index}`} 
+                    className="bg-green-50 border border-green-200 rounded-lg p-3 flex justify-between shadow-sm"
+                    data-building={assignment.building}
+                  >
+                    <div>
+                      <div className="text-sm text-gray-500">戶別</div>
+                      <div className="font-bold">{assignment.unit}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-500">停車位</div>
+                      <div className="font-bold text-success">{assignment.spot}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))
-          ) : (
+            </div>
+          )}
+          
+          {/* Second Round Assignments */}
+          {filteredSecondAssignments.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-3">第二輪分配</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {filteredSecondAssignments.map((assignment, index) => (
+                  <div 
+                    key={`second-${index}`} 
+                    className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex justify-between shadow-sm"
+                    data-building={assignment.building}
+                  >
+                    <div>
+                      <div className="text-sm text-gray-500">戶別</div>
+                      <div className="font-bold">{assignment.unit}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-500">第二個停車位</div>
+                      <div className="font-bold text-blue-600">{assignment.spot}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* No assignments message */}
+          {filteredAssignments.length === 0 && filteredSecondAssignments.length === 0 && (
             <div className="col-span-2 text-center py-12 text-gray-500">
-              {totalAssigned > 0 
+              {totalAssigned > 0 || totalSecondAssigned > 0
                 ? "沒有符合篩選條件的停車位分配" 
                 : "尚未分配任何停車位"}
             </div>

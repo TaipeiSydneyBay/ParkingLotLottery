@@ -21,8 +21,12 @@ const CurrentSelection: React.FC = () => {
     // 開始自動抽取
     if (!timerRef.current) {
       // 初始抽取
-      if (state.isStarted && !state.currentUnit) {
-        drawNext();
+      if ((state.isStarted || state.isSecondRound) && !state.currentUnit) {
+        if (state.isSecondRound) {
+          drawNextSecond();
+        } else {
+          drawNext();
+        }
       }
 
       // 設置定時器，每1秒抽取一次
@@ -30,7 +34,11 @@ const CurrentSelection: React.FC = () => {
         setCountdown((prev) => {
           if (prev <= 1) {
             // 當倒數到1，執行抽取並重置倒數
-            drawNext();
+            if (state.isSecondRound) {
+              drawNextSecond();
+            } else {
+              drawNext();
+            }
             return 1;
           }
           return prev - 1;
@@ -45,12 +53,14 @@ const CurrentSelection: React.FC = () => {
         timerRef.current = null;
       }
     };
-  }, [state.isPaused, state.isStarted, state.isCompleted, drawNext]);
+  }, [state.isPaused, state.isStarted, state.isCompleted, state.isSecondRound, state.isSecondRoundCompleted, drawNext, drawNextSecond]);
 
   return (
     <div className="md:w-1/2 bg-white rounded-xl shadow-lg overflow-hidden">
       <div className="bg-primary text-white p-4">
-        <h2 className="text-xl font-bold">目前選號</h2>
+        <h2 className="text-xl font-bold">
+          {state.isSecondRound ? '第二輪選號' : '第一輪選號'}
+        </h2>
       </div>
 
       <div className="p-6 flex flex-col items-center justify-center min-h-[500px]">
