@@ -12,9 +12,9 @@ import originalUnits from "./units.json";
 
 const RESERVED_SPOT_COUNT = {
   AB: 0,
-  B3: 15,
-  B2: 31,
-  B1: 84,
+  B3: 13,
+  B2: 18,
+  B1: 73,
 };
 
 const BAD_SPOTS = [
@@ -377,6 +377,14 @@ export class MemStorage implements IStorage {
       this.parkingState.availableSpots.AB.slice(42);
     this.parkingState.availableSpots.B3 =
       this.parkingState.availableSpots.B3.slice(2);
+
+    // GH棟預留：B2區40個
+    const b2SpotsForGH = this.parkingState.availableSpots.B2.slice(0, 40);
+    this.parkingState.reservedSpots["GH_B2"] = b2SpotsForGH;
+
+    // 從 availableSpots 中移除已預留的車位
+    this.parkingState.availableSpots.B2 =
+      this.parkingState.availableSpots.B2.slice(40);
 
     // IJ棟預留：B1區40個
     const b1SpotsForIJ = this.parkingState.availableSpots.B1.slice(0, 40);

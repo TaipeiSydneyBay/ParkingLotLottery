@@ -45,15 +45,21 @@ export const buildingConfigs: Record<string, BuildingConfig> = {
   },
   E: {
     units: 89,
-    eligibleAreas: ["B3", "B2", "B1"] as ParkingArea[],
+    eligibleAreas: ["B3", "B2"] as ParkingArea[],
   },
   F: {
     units: 96,
-    eligibleAreas: ["B3", "B2", "B1"] as ParkingArea[],
+    eligibleAreas: ["B3", "B2"] as ParkingArea[],
   },
   GH: {
     units: 40,
     eligibleAreas: ["B2"] as ParkingArea[],
+    spotCount: {
+      AB: 0,
+      B3: 0,
+      B2: 40,
+      B1: 0,
+    },
   },
   IJ: {
     units: 40,
