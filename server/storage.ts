@@ -9,6 +9,7 @@ import {
   Assignment,
 } from "@shared/schema";
 import originalUnits from "./units.json";
+import secondRoundData from "./second.json";
 
 const RESERVED_SPOT_COUNT = {
   AB: 0,
@@ -76,6 +77,10 @@ export interface IStorage {
   startSelection(): Promise<ParkingState>;
   drawNext(): Promise<{ assignment: Assignment | null; state: ParkingState }>;
   resetSelection(): Promise<void>;
+  
+  // Second round operations
+  startSecondRound(): Promise<ParkingState>;
+  drawNextSecond(): Promise<{ assignment: Assignment | null; state: ParkingState }>;
 }
 
 export class MemStorage implements IStorage {

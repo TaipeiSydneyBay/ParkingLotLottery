@@ -118,6 +118,11 @@ export interface ParkingState {
   isStarted: boolean;
   isPaused: boolean;
   isCompleted: boolean;
+  // 第二輪抽籤相關
+  isSecondRound: boolean;
+  secondRoundUnits: Record<string, ParkingArea[]>; // key: unit, value: preferred areas
+  secondRoundAssignments: Assignment[];
+  isSecondRoundCompleted: boolean;
 }
 
 // API response types
