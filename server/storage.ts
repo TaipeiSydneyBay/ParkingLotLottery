@@ -128,6 +128,11 @@ export class MemStorage implements IStorage {
       isStarted: false,
       isPaused: false,
       isCompleted: false,
+      // Second round properties
+      isSecondRound: false,
+      secondRoundUnits: secondRoundData as Record<string, ParkingArea[]>,
+      secondRoundAssignments: [],
+      isSecondRoundCompleted: false,
     };
   }
 
@@ -266,6 +271,11 @@ export class MemStorage implements IStorage {
       isStarted: false,
       isPaused: false,
       isCompleted: false,
+      // Second round properties
+      isSecondRound: false,
+      secondRoundUnits: secondRoundData as Record<string, ParkingArea[]>,
+      secondRoundAssignments: [],
+      isSecondRoundCompleted: false,
     };
 
     this.initializeAvailableSpots();
@@ -546,6 +556,71 @@ export class MemStorage implements IStorage {
     } else {
       return building;
     }
+  }
+
+  // Second round methods
+  async startSecondRound(): Promise<ParkingState> {
+    this.parkingState.isSecondRound = true;
+    this.parkingState.secondRoundAssignments = [];
+    this.parkingState.currentUnit = null;
+    this.parkingState.currentSpot = null;
+    this.parkingState.isSecondRoundCompleted = false;
+    
+    return this.parkingState;
+  }
+
+  async drawNextSecond(): Promise<{ assignment: Assignment | null; state: ParkingState }> {
+    if (this.parkingState.isSecondRoundCompleted) {
+      return { assignment: null, state: this.parkingState };
+    }
+
+    // Get units that haven't been assigned a second spot yet
+    const assignedSecondUnits = this.parkingState.secondRoundAssignments.map(a => a.unit);
+    const availableUnits = Object.keys(this.parkingState.secondRoundUnits)
+      .filter(unit => !assignedSecondUnits.includes(unit));
+
+    if (availableUnits.length === 0) {
+      this.parkingState.isSecondRoundCompleted = true;
+      this.parkingState.currentUnit = null;
+      this.parkingState.currentSpot = null;
+      return { assignment: null, state: this.parkingState };
+    }
+
+    // Randomly select a unit
+    const selectedUnit = availableUnits[Math.floor(Math.random() * availableUnits.length)];
+    const preferredAreas = this.parkingState.secondRoundUnits[selectedUnit];
+
+    // Try to assign a spot from preferred areas
+    let assignedSpot: string | null = null;
+    for (const area of preferredAreas) {
+      const availableSpots = this.parkingState.availableSpots[area];
+      if (availableSpots && availableSpots.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableSpots.length);
+        assignedSpot = availableSpots[randomIndex];
+        availableSpots.splice(randomIndex, 1);
+        break;
+      }
+    }
+
+    if (assignedSpot) {
+      const assignment: Assignment = {
+        unit: selectedUnit,
+        building: selectedUnit.charAt(0) as Building,
+        spot: assignedSpot,
+      };
+
+      this.parkingState.secondRoundAssignments.push(assignment);
+      this.parkingState.currentUnit = selectedUnit;
+      this.parkingState.currentSpot = assignedSpot;
+
+      return { assignment, state: this.parkingState };
+    }
+
+    // No spots available, mark as completed
+    this.parkingState.isSecondRoundCompleted = true;
+    this.parkingState.currentUnit = null;
+    this.parkingState.currentSpot = null;
+    return { assignment: null, state: this.parkingState };
   }
 }
 

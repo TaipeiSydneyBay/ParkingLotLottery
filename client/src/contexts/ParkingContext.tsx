@@ -83,6 +83,8 @@ interface ParkingContextType {
   drawNext: () => Promise<void>;
   togglePause: () => void;
   resetSelection: () => Promise<void>;
+  startSecondRound: () => Promise<void>;
+  drawNextSecond: () => Promise<void>;
 }
 
 // Create context

@@ -78,6 +78,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // POST /api/parking/start-second - Start second round selection
+  app.post("/api/parking/start-second", async (req, res) => {
+    try {
+      const state = await storage.startSecondRound();
+      res.json({ state });
+    } catch (error) {
+      console.error("Error starting second round:", error);
+      res.status(500).json({ error: "Failed to start second round" });
+    }
+  });
+
+  // POST /api/parking/draw-second - Draw next spot for second round
+  app.post("/api/parking/draw-second", async (req, res) => {
+    try {
+      const result = await storage.drawNextSecond();
+      res.json(result);
+    } catch (error) {
+      console.error("Error drawing second spot:", error);
+      res.status(500).json({ error: "Failed to draw second spot" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
