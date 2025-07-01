@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff } from 'lucide-react';
 
 const SelectionScreen: React.FC = () => {
-  const { state, togglePause, resetSelection } = useParkingContext();
+  const { state, togglePause, resetSelection, startSecondRound, drawNextSecond } = useParkingContext();
   const { toast } = useToast();
   const [showRemainingSpots, setShowRemainingSpots] = useState(false);
 
@@ -45,6 +45,14 @@ const SelectionScreen: React.FC = () => {
             >
               {state.isPaused ? '繼續' : '暫停'}
             </Button>
+            {state.isCompleted && !state.isSecondRound && (
+              <Button
+                onClick={startSecondRound}
+                className="bg-green-600 text-white px-4 py-2 rounded-md font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300"
+              >
+                第二輪抽籤
+              </Button>
+            )}
             <Button
               onClick={handleReset}
               className="bg-red-600 text-white px-4 py-2 rounded-md font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300"

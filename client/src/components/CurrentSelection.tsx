@@ -3,7 +3,7 @@ import { useParkingContext } from "@/contexts/ParkingContext";
 import { Button } from "@/components/ui/button";
 
 const CurrentSelection: React.FC = () => {
-  const { state, drawNext } = useParkingContext();
+  const { state, drawNext, drawNextSecond } = useParkingContext();
   const [countdown, setCountdown] = useState<number>(1);
   const timerRef = useRef<number | null>(null);
 

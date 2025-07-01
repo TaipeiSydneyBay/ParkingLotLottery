@@ -13,12 +13,19 @@ import {
 
 // Initial state
 const initialState: ParkingState = {
+  allSpots: {
+    'AB': [],
+    'B3': [],
+    'B2': [],
+    'B1': []
+  },
   availableSpots: {
     'AB': [],
     'B3': [],
     'B2': [],
     'B1': []
   },
+  reservedSpots: {},
   unassignedUnits: {
     'A': [],
     'B': [],
@@ -32,10 +39,19 @@ const initialState: ParkingState = {
     'J': []
   },
   assignments: [],
+  badSpots: [],
+  friendlySpots: [],
+  restrictedUnits: {},
   currentUnit: null,
   currentSpot: null,
   isStarted: false,
-  isPaused: false
+  isPaused: false,
+  isCompleted: false,
+  // Second round properties
+  isSecondRound: false,
+  secondRoundUnits: {},
+  secondRoundAssignments: [],
+  isSecondRoundCompleted: false,
 };
 
 // Action types
@@ -196,6 +212,68 @@ export function ParkingProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Start second round selection
+  const startSecondRound = async () => {
+    try {
+      const response = await apiRequest('POST', '/api/parking/start-second', undefined);
+      const data: StateResponse = await response.json();
+      
+      dispatch({ type: 'SET_STATE', payload: data.state });
+      toast({
+        title: "第二輪抽籤開始",
+        description: "開始進行第二個車位的抽籤",
+      });
+    } catch (error) {
+      console.error('Failed to start second round:', error);
+      toast({
+        title: "Error",
+        description: "Failed to start second round selection. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Draw next parking spot for second round
+  const drawNextSecond = async () => {
+    if (state.isPaused) return;
+
+    try {
+      const response = await apiRequest('POST', '/api/parking/draw-second', undefined);
+      const data: AssignmentResponse = await response.json();
+      
+      if (data.assignment) {
+        dispatch({ 
+          type: 'SET_CURRENT_SELECTION', 
+          payload: { 
+            unit: data.assignment.unit, 
+            spot: data.assignment.spot 
+          } 
+        });
+        
+        dispatch({ type: 'ADD_ASSIGNMENT', payload: data.assignment });
+        dispatch({ type: 'SET_STATE', payload: data.state });
+        
+        toast({
+          title: "第二個車位抽中",
+          description: `${data.assignment.unit} 抽中 ${data.assignment.spot}`,
+        });
+      } else {
+        dispatch({ type: 'SET_STATE', payload: data.state });
+        toast({
+          title: "第二輪抽籤完成",
+          description: "所有第二個車位已分配完畢",
+        });
+      }
+    } catch (error) {
+      console.error('Failed to draw second:', error);
+      toast({
+        title: "Error",
+        description: "Failed to draw second spot. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   // Context value
   const value = {
     state,
@@ -204,7 +282,9 @@ export function ParkingProvider({ children }: { children: React.ReactNode }) {
     startSelection,
     drawNext,
     togglePause,
-    resetSelection
+    resetSelection,
+    startSecondRound,
+    drawNextSecond
   };
 
   return (
