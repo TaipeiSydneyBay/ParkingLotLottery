@@ -77,10 +77,13 @@ export interface IStorage {
   startSelection(): Promise<ParkingState>;
   drawNext(): Promise<{ assignment: Assignment | null; state: ParkingState }>;
   resetSelection(): Promise<void>;
-  
+
   // Second round operations
   startSecondRound(): Promise<ParkingState>;
-  drawNextSecond(): Promise<{ assignment: Assignment | null; state: ParkingState }>;
+  drawNextSecond(): Promise<{
+    assignment: Assignment | null;
+    state: ParkingState;
+  }>;
 }
 
 export class MemStorage implements IStorage {
@@ -565,19 +568,25 @@ export class MemStorage implements IStorage {
     this.parkingState.currentUnit = null;
     this.parkingState.currentSpot = null;
     this.parkingState.isSecondRoundCompleted = false;
-    
+
     return this.parkingState;
   }
 
-  async drawNextSecond(): Promise<{ assignment: Assignment | null; state: ParkingState }> {
+  async drawNextSecond(): Promise<{
+    assignment: Assignment | null;
+    state: ParkingState;
+  }> {
     if (this.parkingState.isSecondRoundCompleted) {
       return { assignment: null, state: this.parkingState };
     }
 
     // Get units that haven't been assigned a second spot yet
-    const assignedSecondUnits = this.parkingState.secondRoundAssignments.map(a => a.unit);
-    const availableUnits = Object.keys(this.parkingState.secondRoundUnits)
-      .filter(unit => !assignedSecondUnits.includes(unit));
+    const assignedSecondUnits = this.parkingState.secondRoundAssignments.map(
+      (a) => a.unit
+    );
+    const availableUnits = Object.keys(
+      this.parkingState.secondRoundUnits
+    ).filter((unit) => !assignedSecondUnits.includes(unit));
 
     if (availableUnits.length === 0) {
       this.parkingState.isSecondRoundCompleted = true;
@@ -586,8 +595,8 @@ export class MemStorage implements IStorage {
       return { assignment: null, state: this.parkingState };
     }
 
-    // Randomly select a unit
-    const selectedUnit = availableUnits[Math.floor(Math.random() * availableUnits.length)];
+    // Select first unit
+    const selectedUnit = availableUnits[0];
     const preferredAreas = this.parkingState.secondRoundUnits[selectedUnit];
 
     // Try to assign a spot from preferred areas
@@ -599,6 +608,8 @@ export class MemStorage implements IStorage {
         assignedSpot = availableSpots[randomIndex];
         availableSpots.splice(randomIndex, 1);
         break;
+      } else {
+        console.log(`No available spots in ${area} for ${selectedUnit}`);
       }
     }
 
@@ -614,13 +625,40 @@ export class MemStorage implements IStorage {
       this.parkingState.currentSpot = assignedSpot;
 
       return { assignment, state: this.parkingState };
-    }
+    } else {
+      const excludedAreas = Object.entries(this.parkingState.availableSpots)
+        .filter(
+          ([area, spots]) =>
+            !preferredAreas.includes(area as ParkingArea) && spots.length > 0
+        )
+        .map(([area]) => area) as ParkingArea[];
 
-    // No spots available, mark as completed
-    this.parkingState.isSecondRoundCompleted = true;
-    this.parkingState.currentUnit = null;
-    this.parkingState.currentSpot = null;
-    return { assignment: null, state: this.parkingState };
+      for (const area of excludedAreas) {
+        const availableSpots = this.parkingState.availableSpots[area];
+        if (availableSpots && availableSpots.length > 0) {
+          const randomIndex = Math.floor(Math.random() * availableSpots.length);
+          assignedSpot = availableSpots[randomIndex];
+          availableSpots.splice(randomIndex, 1);
+          break;
+        } else {
+          console.log(
+            `No available spots in ${area} for ${selectedUnit} (secondary)`
+          );
+        }
+      }
+
+      const assignment: Assignment = {
+        unit: selectedUnit,
+        building: selectedUnit.charAt(0) as Building,
+        spot: assignedSpot as string,
+      };
+
+      this.parkingState.secondRoundAssignments.push(assignment);
+      this.parkingState.currentUnit = selectedUnit;
+      this.parkingState.currentSpot = assignedSpot;
+
+      return { assignment, state: this.parkingState };
+    }
   }
 }
 
