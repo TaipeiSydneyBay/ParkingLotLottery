@@ -196,7 +196,7 @@ export class MemStorage implements IStorage {
     if (!selectedUnitInfo) {
       // 所有戶別都已分配完成
       this.parkingState.isCompleted = true;
-      this.parkingState.isPaused = true;
+      // this.parkingState.isPaused = true;
       this.parkingState.currentUnit = null;
       this.parkingState.currentSpot = null;
       console.log("所有抽籤已完成！");
