@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 
 const CurrentSelection: React.FC = () => {
   const { state, drawNext, drawNextSecond } = useParkingContext();
-  const [countdown, setCountdown] = useState<number>(1);
   const timerRef = useRef<number | null>(null);
 
   // 設置自動抽取下一個停車位的定時器
@@ -31,18 +30,11 @@ const CurrentSelection: React.FC = () => {
 
       // 設置定時器，每1秒抽取一次
       timerRef.current = window.setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            // 當倒數到1，執行抽取並重置倒數
-            if (state.isSecondRound) {
-              drawNextSecond();
-            } else {
-              drawNext();
-            }
-            return 1;
-          }
-          return prev - 1;
-        });
+        if (state.isSecondRound) {
+          drawNextSecond();
+        } else {
+          drawNext();
+        }
       }, 0.01 * 1000);
     }
 
@@ -53,13 +45,21 @@ const CurrentSelection: React.FC = () => {
         timerRef.current = null;
       }
     };
-  }, [state.isPaused, state.isStarted, state.isCompleted, state.isSecondRound, state.isSecondRoundCompleted, drawNext, drawNextSecond]);
+  }, [
+    state.isPaused,
+    state.isStarted,
+    state.isCompleted,
+    state.isSecondRound,
+    state.isSecondRoundCompleted,
+    drawNext,
+    drawNextSecond,
+  ]);
 
   return (
     <div className="md:w-1/2 bg-white rounded-xl shadow-lg overflow-hidden">
       <div className="bg-primary text-white p-4">
         <h2 className="text-xl font-bold">
-          {state.isSecondRound ? '第二輪選號' : '第一輪選號'}
+          {state.isSecondRound ? "第二輪選號" : "第一輪選號"}
         </h2>
       </div>
 
@@ -85,8 +85,12 @@ const CurrentSelection: React.FC = () => {
         <div className="mt-8 text-center">
           {state.isCompleted ? (
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600 mb-4">🎉 抽籤完成！</div>
-              <div className="text-lg text-gray-600">所有住戶都已分配到停車位</div>
+              <div className="text-2xl font-bold text-green-600 mb-4">
+                🎉 抽籤完成！
+              </div>
+              <div className="text-lg text-gray-600">
+                所有住戶都已分配到停車位
+              </div>
             </div>
           ) : state.isPaused ? (
             <Button
@@ -98,9 +102,6 @@ const CurrentSelection: React.FC = () => {
           ) : (
             <div className="text-2xl font-semibold text-primary-600">
               <div className="mb-2">自動抽取中...</div>
-              <div className="text-3xl font-bold">
-                {countdown} 秒後抽取下一個
-              </div>
             </div>
           )}
         </div>
