@@ -17,24 +17,32 @@ const CurrentSelection: React.FC = () => {
       return;
     }
 
-    // 開始自動抽取
-    if (!timerRef.current) {
+    // 清除舊的定時器
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+
+    // 根據 isSecondRound 設置定時器
+    if (state.isSecondRound) {
       // 初始抽取
-      if ((state.isStarted || state.isSecondRound) && !state.currentUnit) {
-        if (state.isSecondRound) {
-          drawNextSecond();
-        } else {
-          drawNext();
-        }
+      if (state.isSecondRound && !state.currentUnit) {
+        drawNextSecond();
       }
 
-      // 設置定時器，每1秒抽取一次
+      // 設置定時器
       timerRef.current = window.setInterval(() => {
-        if (state.isSecondRound) {
-          drawNextSecond();
-        } else {
-          drawNext();
-        }
+        drawNextSecond();
+      }, 0.01 * 1000);
+    } else {
+      // 初始抽取
+      if (state.isStarted && !state.currentUnit) {
+        drawNext();
+      }
+
+      // 設置定時器
+      timerRef.current = window.setInterval(() => {
+        drawNext();
       }, 0.01 * 1000);
     }
 

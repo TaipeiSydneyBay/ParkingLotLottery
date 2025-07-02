@@ -196,7 +196,7 @@ export class MemStorage implements IStorage {
     if (!selectedUnitInfo) {
       // 所有戶別都已分配完成
       this.parkingState.isCompleted = true;
-      // this.parkingState.isPaused = true;
+      this.parkingState.isPaused = true;
       this.parkingState.currentUnit = null;
       this.parkingState.currentSpot = null;
       console.log("所有抽籤已完成！");
@@ -564,6 +564,7 @@ export class MemStorage implements IStorage {
   // Second round methods
   async startSecondRound(): Promise<ParkingState> {
     this.parkingState.isSecondRound = true;
+    this.parkingState.isPaused = false;
     this.parkingState.secondRoundAssignments = [];
     this.parkingState.currentUnit = null;
     this.parkingState.currentSpot = null;
@@ -590,6 +591,7 @@ export class MemStorage implements IStorage {
 
     if (availableUnits.length === 0) {
       this.parkingState.isSecondRoundCompleted = true;
+      this.parkingState.isPaused = true;
       this.parkingState.currentUnit = null;
       this.parkingState.currentSpot = null;
       return { assignment: null, state: this.parkingState };
