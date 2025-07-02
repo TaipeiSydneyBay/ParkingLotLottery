@@ -89,43 +89,56 @@ const StartScreen: React.FC = () => {
         </div>
 
         <Card className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            停車位分配規則
-          </h2>
-          <div className="text-left">
-            <p className="mb-4">
-              社區總共有 ABCDEFGHIJ 10 棟，每戶只能抽一個停車位。
-            </p>
-            <ul className="space-y-2 text-gray-700">
-              <li>
-                <span className="font-semibold">AB棟:</span> 總共 44 戶，可抽 AB
-                棟的 43 個停車位以及 B3 預留的 2 個停車位
-              </li>
-              <li>
-                <span className="font-semibold">C棟:</span> 總共 83 戶，可抽 B3
-                預留的 97 個停車位及 B2 預留的 343 個停車位
-              </li>
-              <li>
-                <span className="font-semibold">D棟:</span> 總共 84 戶，可抽 B3
-                預留的 97 個停車位及 B2 預留的 343 個停車位
-              </li>
-              <li>
-                <span className="font-semibold">E棟:</span> 總共 89 戶，可抽 B2
-                預留的 343 個停車位及 B1 預留的 124 個停車位
-              </li>
-              <li>
-                <span className="font-semibold">F棟:</span> 總共 96 戶，可抽 B2
-                預留的 343 個停車位及 B1 預留的 124 個停車位
-              </li>
-              <li>
-                <span className="font-semibold">GH棟:</span> 總共 40 戶，可抽 B2
-                預留的 343 個停車位
-              </li>
-              <li>
-                <span className="font-semibold">IJ棟:</span> 總共 40 戶，可抽 B1
-                預留的 124 個停車位
-              </li>
-            </ul>
+          <div className="text-left space-y-4">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                📢【雪梨灣｜機車位電腦抽籤公告】時間：7/5 19:00線上直播
+              </h2>
+              <p className="text-lg text-gray-700">
+                🛵 本次機車格共計 619格，將進行電腦抽籤作業，分為「第一車位（固定）476戶」及「第二車位（月租）79個」抽籤。
+              </p>
+            </div>
+            
+            <div className="border-t pt-4">
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold text-blue-600 mb-3">🔹第一車位（固定）隨機抽籤分區如下：</h3>
+                <div className="space-y-2 ml-4">
+                  <p>🦄 AB棟 ➜ 抽AB區車位</p>
+                  <p className="ml-4">　未中籤者 ➜ 剩餘2戶抽B3</p>
+                  <p>🦄 CDEF棟 ➜ 抽B3區車位</p>
+                  <p>🦄 CDEFGH棟 ➜ 抽B2區車位</p>
+                  <p>🦄 IJ棟 ➜ 抽B1區車位</p>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold text-blue-600 mb-3">🔹特殊戶別（免搭電梯）優先抽籤區：</h3>
+                <div className="space-y-2 ml-4">
+                  <p>🏠 B1F（277、281、283、285）</p>
+                  <p>🏠 B1E（287、289、291、293、295）</p>
+                  <p>👉 以上 9戶 ➜ 抽 B1</p>
+                  <p>🏠 B2E（289、291、293、295）</p>
+                  <p>👉 共 4戶 ➜ 抽 B2</p>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold text-green-600 mb-3">💰第二車位（月租）照登記順序抽籤：</h3>
+                <div className="space-y-2 ml-4">
+                  <p>B3餘13個、B2餘22個、B1餘82個，共117個可出租機車位：</p>
+                  <p>登記共 78+1友善需求 ➜ 抽出後年繳使用</p>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold text-red-600 mb-3">⛔以下為自行車專區（不列入抽籤）共 13格：</h3>
+                <div className="space-y-1 ml-4 text-sm">
+                  <p>B1：572、573</p>
+                  <p>B2：159、160、161、486、487、408、338、339、340</p>
+                  <p>B3：82、143-1</p>
+                </div>
+              </div>
+            </div>
           </div>
         </Card>
 
