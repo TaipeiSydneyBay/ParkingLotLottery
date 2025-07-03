@@ -92,10 +92,13 @@ const StartScreen: React.FC = () => {
           <div className="text-left space-y-4">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                📢【雪梨灣｜機車位電腦抽籤公告】時間：7/5 19:00線上直播
+                📢【台北雪梨灣｜機車位電腦抽籤公告】
               </h2>
+              <p className="text-lg text-blue-600 font-semibold mb-3">
+                ⏰時間：7/5 19:00線上直播
+              </p>
               <p className="text-lg text-gray-700">
-                🛵 本次機車格共計 619格，將進行電腦抽籤作業，分為「第一車位（固定）476戶」及「第二車位（月租）79個」抽籤。
+                🛵 本次機車格共計 619格，將進行電腦抽籤作業，分為「第一車位（固定）476戶」及「第二車位（月租）79戶」抽籤。
               </p>
             </div>
             
@@ -112,12 +115,12 @@ const StartScreen: React.FC = () => {
               </div>
               
               <div className="mb-4">
-                <h3 className="text-lg font-semibold text-blue-600 mb-3">🔹特殊戶別（免搭電梯）優先抽籤區：</h3>
+                <h3 className="text-lg font-semibold text-blue-600 mb-3">🔹特殊戶別（免搭電梯）抽籤區：</h3>
                 <div className="space-y-2 ml-4">
-                  <p>🏠 B1F（277、281、283、285）</p>
-                  <p>🏠 B1E（287、289、291、293、295）</p>
+                  <p>🏠 F5-1F、F7-1F、F8-1F、F9-1F</p>
+                  <p>🏠 E9-2F、E8-2F、E7-2F、E6-2F、E5-2F</p>
                   <p>👉 以上 9戶 ➜ 抽 B1</p>
-                  <p>🏠 B2E（289、291、293、295）</p>
+                  <p>🏠 E8-1F、E7-1F、E6-1F、E5-1F</p>
                   <p>👉 共 4戶 ➜ 抽 B2</p>
                 </div>
               </div>
@@ -125,8 +128,8 @@ const StartScreen: React.FC = () => {
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-green-600 mb-3">💰第二車位（月租）照登記順序抽籤：</h3>
                 <div className="space-y-2 ml-4">
-                  <p>B3餘13個、B2餘22個、B1餘82個，共117個可出租機車位：</p>
-                  <p>登記共 78+1友善需求 ➜ 抽出後年繳使用</p>
+                  <p>B3餘13格、B2餘22格、B1餘82格，共117格可出租機車位：</p>
+                  <p>登記共 78+1（友善）戶需求 ➜ 抽出後年繳使用</p>
                 </div>
               </div>
               
