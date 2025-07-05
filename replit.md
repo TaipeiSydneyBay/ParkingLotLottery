@@ -44,7 +44,7 @@ This is a full-stack web application for automatically assigning parking spots t
 
 3. **Parking Area Management**
    - Four parking areas: AB, B3, B2, B1
-   - Reserved spots and bad spots filtering
+   - Reserved spots and biclcye spots filtering
    - Friendly spots for accessibility needs
 
 4. **Selection Interface**
