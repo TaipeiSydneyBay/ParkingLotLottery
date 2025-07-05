@@ -39,7 +39,7 @@ const initialState: ParkingState = {
     'J': []
   },
   assignments: [],
-  badSpots: [],
+  bicycleSpots: [],
   friendlySpots: [],
   restrictedUnits: {},
   currentUnit: null,

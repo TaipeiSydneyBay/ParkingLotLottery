@@ -18,7 +18,7 @@ const RESERVED_SPOT_COUNT = {
   B1: 73,
 };
 
-const BAD_SPOTS = [
+const BICYCLE_SPOTS = [
   "B3-82",
   "B3-143-1",
   "B2-159",
@@ -122,7 +122,7 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
-      badSpots: BAD_SPOTS,
+      bicycleSpots: BICYCLE_SPOTS,
       friendlySpots: FRIENDLY_SPOTS,
       restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
@@ -265,7 +265,7 @@ export class MemStorage implements IStorage {
         I: [],
         J: [],
       },
-      badSpots: BAD_SPOTS,
+      bicycleSpots: BICYCLE_SPOTS,
       friendlySpots: FRIENDLY_SPOTS,
       restrictedUnits: RESTRICTED_UNITS,
       assignments: [],
@@ -296,8 +296,8 @@ export class MemStorage implements IStorage {
 
       this.parkingState.allSpots.AB.push(spot);
 
-      if (FRIENDLY_SPOTS.includes(spot) || BAD_SPOTS.includes(spot)) {
-        continue; // 排除友善車位和不好停的車位
+      if (FRIENDLY_SPOTS.includes(spot) || BICYCLE_SPOTS.includes(spot)) {
+        continue; // 排除友善車位和自行車車位
       }
 
       abSpots.push(spot);
@@ -311,8 +311,8 @@ export class MemStorage implements IStorage {
 
       this.parkingState.allSpots.B3.push(spot);
 
-      if (FRIENDLY_SPOTS.includes(spot) || BAD_SPOTS.includes(spot)) {
-        continue; // 排除友善車位和不好停的車位
+      if (FRIENDLY_SPOTS.includes(spot) || BICYCLE_SPOTS.includes(spot)) {
+        continue; // 排除友善車位和自行車車位
       }
 
       b3Spots.push(spot);
@@ -326,8 +326,8 @@ export class MemStorage implements IStorage {
 
       this.parkingState.allSpots.B2.push(spot);
 
-      if (FRIENDLY_SPOTS.includes(spot) || BAD_SPOTS.includes(spot)) {
-        continue; // 排除友善車位和不好停的車位
+      if (FRIENDLY_SPOTS.includes(spot) || BICYCLE_SPOTS.includes(spot)) {
+        continue; // 排除友善車位和自行車車位
       }
 
       b2Spots.push(spot);
@@ -341,8 +341,8 @@ export class MemStorage implements IStorage {
 
       this.parkingState.allSpots.B1.push(spot);
 
-      if (FRIENDLY_SPOTS.includes(spot) || BAD_SPOTS.includes(spot)) {
-        continue; // 排除友善車位和不好停的車位
+      if (FRIENDLY_SPOTS.includes(spot) || BICYCLE_SPOTS.includes(spot)) {
+        continue; // 排除友善車位和自行車車位
       }
 
       b1Spots.push(spot);

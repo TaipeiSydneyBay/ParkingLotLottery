@@ -52,7 +52,9 @@ const RemainingSpots: React.FC = () => {
         <div className="mt-2 text-sm opacity-90">
           第一輪已分配：{state.assignments.length} 個
           {state.secondRoundAssignments.length > 0 && (
-            <span className="ml-4">第二輪已分配：{state.secondRoundAssignments.length} 個</span>
+            <span className="ml-4">
+              第二輪已分配：{state.secondRoundAssignments.length} 個
+            </span>
           )}
         </div>
       </div>
@@ -74,10 +76,12 @@ const RemainingSpots: React.FC = () => {
                         const alreadyAssigned = state.assignments.some(
                           (assignment) => assignment.spot === fullSpotId
                         );
-                        const secondRoundAssigned = state.secondRoundAssignments.some(
-                          (assignment) => assignment.spot === fullSpotId
-                        );
-                        const isBad = state.badSpots.includes(fullSpotId);
+                        const secondRoundAssigned =
+                          state.secondRoundAssignments.some(
+                            (assignment) => assignment.spot === fullSpotId
+                          );
+                        const isBicycle =
+                          state.bicycleSpots.includes(fullSpotId);
                         const isFriendly =
                           state.friendlySpots.includes(fullSpotId);
 
@@ -85,7 +89,7 @@ const RemainingSpots: React.FC = () => {
                           <div
                             key={spot}
                             className={
-                              (isBad
+                              (isBicycle
                                 ? "bg-red-300"
                                 : isFriendly
                                 ? "bg-green-300"
@@ -96,7 +100,13 @@ const RemainingSpots: React.FC = () => {
                                 : "bg-white") +
                               ` border border-gray-200 rounded px-1 py-1 text-center text-xs font-mono`
                             }
-                            title={`${fullSpotId}${alreadyAssigned ? ' (第一輪已分配)' : secondRoundAssigned ? ' (第二輪已分配)' : ''}`}
+                            title={`${fullSpotId}${
+                              alreadyAssigned
+                                ? " (第一輪已分配)"
+                                : secondRoundAssigned
+                                ? " (第二輪已分配)"
+                                : ""
+                            }`}
                           >
                             {spot}
                           </div>
@@ -130,7 +140,7 @@ const RemainingSpots: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-1">
                   <div className="w-4 h-4 bg-red-300 border border-gray-200 rounded"></div>
-                  <span className="text-gray-600">不適合車位</span>
+                  <span className="text-gray-600">自行車車位</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <div className="w-4 h-4 bg-gray-300 border border-gray-200 rounded"></div>

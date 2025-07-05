@@ -110,7 +110,7 @@ export interface ParkingState {
   reservedSpots: Record<string, string[]>; // key: "AB_AB", "IJ_B1" etc, value: spot IDs
   unassignedUnits: Record<Building, string[]>;
   assignments: Assignment[];
-  badSpots: string[];
+  bicycleSpots: string[];
   friendlySpots: string[];
   restrictedUnits: Record<string, ParkingArea>;
   currentUnit: string | null;
