@@ -18,71 +18,83 @@ const StartScreen: React.FC = () => {
           </p>
 
           {/* Image Container */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-            <div className="w-full h-48 bg-gray-300 rounded-lg shadow-md overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {/* 機車圖示 */}
+            <div className="w-full h-48 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg overflow-hidden border border-blue-200">
               <svg
-                className="w-full h-full text-gray-500"
-                viewBox="0 0 24 24"
+                className="w-full h-full text-blue-600 p-8"
+                viewBox="0 0 100 100"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <rect
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  opacity="0.2"
-                />
-                <path
-                  d="M3 21H21M3 18H21M6 18V9.5M18 18V9.5M10.5 18V13.5M13.5 18V13.5M4.5 10L12 3L19.5 10"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                {/* 機車車身 */}
+                <rect x="25" y="35" width="50" height="15" rx="7" fill="currentColor"/>
+                {/* 前輪 */}
+                <circle cx="20" cy="65" r="12" stroke="currentColor" strokeWidth="3" fill="none"/>
+                <circle cx="20" cy="65" r="6" fill="currentColor"/>
+                {/* 後輪 */}
+                <circle cx="80" cy="65" r="12" stroke="currentColor" strokeWidth="3" fill="none"/>
+                <circle cx="80" cy="65" r="6" fill="currentColor"/>
+                {/* 把手 */}
+                <path d="M25 35 L15 25 M25 35 L35 25" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+                {/* 車座 */}
+                <rect x="55" y="25" width="20" height="8" rx="4" fill="currentColor"/>
+                {/* 連接部分 */}
+                <line x1="20" y1="53" x2="20" y2="65" stroke="currentColor" strokeWidth="3"/>
+                <line x1="80" y1="53" x2="80" y2="65" stroke="currentColor" strokeWidth="3"/>
+                <line x1="32" y1="50" x2="68" y2="50" stroke="currentColor" strokeWidth="3"/>
               </svg>
             </div>
-            <div className="w-full h-48 bg-gray-300 rounded-lg shadow-md overflow-hidden">
+
+            {/* 停車場圖示 */}
+            <div className="w-full h-48 bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-lg overflow-hidden border border-green-200">
               <svg
-                className="w-full h-full text-gray-500"
-                viewBox="0 0 24 24"
+                className="w-full h-full text-green-600 p-6"
+                viewBox="0 0 100 100"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <rect
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  opacity="0.2"
-                />
-                <path
-                  d="M8 18H2V6H22V18H16M12 2V6M4 6H20M16 10H20V14H16M4 10H8V14H4M12 10H14V18H10V10H12M9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18M21 18C21 19.6569 19.6569 21 18 21C16.3431 21 15 19.6569 15 18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                {/* 建築物外框 */}
+                <rect x="10" y="20" width="80" height="60" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.1"/>
+                {/* 屋頂 */}
+                <path d="M5 20 L50 5 L95 20" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2"/>
+                {/* 停車格線 */}
+                <line x1="25" y1="30" x2="25" y2="70" stroke="currentColor" strokeWidth="1.5"/>
+                <line x1="40" y1="30" x2="40" y2="70" stroke="currentColor" strokeWidth="1.5"/>
+                <line x1="55" y1="30" x2="55" y2="70" stroke="currentColor" strokeWidth="1.5"/>
+                <line x1="70" y1="30" x2="70" y2="70" stroke="currentColor" strokeWidth="1.5"/>
+                {/* 停車位標記 */}
+                <text x="17" y="55" fontSize="8" fill="currentColor" textAnchor="middle">P</text>
+                <text x="32" y="55" fontSize="8" fill="currentColor" textAnchor="middle">P</text>
+                <text x="47" y="55" fontSize="8" fill="currentColor" textAnchor="middle">P</text>
+                <text x="62" y="55" fontSize="8" fill="currentColor" textAnchor="middle">P</text>
+                <text x="77" y="55" fontSize="8" fill="currentColor" textAnchor="middle">P</text>
+                {/* 入口 */}
+                <rect x="42" y="75" width="16" height="5" fill="currentColor"/>
               </svg>
             </div>
-            <div className="w-full h-48 bg-gray-300 rounded-lg shadow-md overflow-hidden">
+
+            {/* 抽籤箱圖示 */}
+            <div className="w-full h-48 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl shadow-lg overflow-hidden border border-orange-200">
               <svg
-                className="w-full h-full text-gray-500"
-                viewBox="0 0 24 24"
+                className="w-full h-full text-orange-600 p-8"
+                viewBox="0 0 100 100"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <rect
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  opacity="0.2"
-                />
-                <path
-                  d="M20 22V17M17.5 19.5H22.5M13 6.5L17.5 11M6.5 17.5L11 13M11 6.5L15.5 2L19 5.5L14.5 10M2 19L5.5 15.5L10 20"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                {/* 抽籤箱 */}
+                <rect x="20" y="40" width="60" height="45" rx="5" stroke="currentColor" strokeWidth="3" fill="currentColor" fillOpacity="0.1"/>
+                {/* 箱蓋 */}
+                <ellipse cx="50" cy="40" rx="30" ry="8" stroke="currentColor" strokeWidth="3" fill="currentColor" fillOpacity="0.2"/>
+                {/* 投入口 */}
+                <rect x="40" y="25" width="20" height="15" rx="10" stroke="currentColor" strokeWidth="2" fill="none"/>
+                {/* 抽籤紙片飛出效果 */}
+                <rect x="65" y="15" width="8" height="12" rx="2" fill="currentColor" transform="rotate(15 69 21)"/>
+                <rect x="75" y="10" width="6" height="9" rx="1.5" fill="currentColor" fillOpacity="0.7" transform="rotate(25 78 14.5)"/>
+                <rect x="15" y="20" width="7" height="10" rx="1.5" fill="currentColor" fillOpacity="0.8" transform="rotate(-20 18.5 25)"/>
+                {/* 手柄 */}
+                <circle cx="75" cy="55" r="4" stroke="currentColor" strokeWidth="2" fill="none"/>
+                <line x1="75" y1="51" x2="75" y2="45" stroke="currentColor" strokeWidth="2"/>
               </svg>
             </div>
           </div>
