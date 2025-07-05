@@ -33,7 +33,7 @@ const CurrentSelection: React.FC = () => {
       // 設置定時器
       timerRef.current = window.setInterval(() => {
         drawNextSecond();
-      }, 0.01 * 1000);
+      }, 1 * 1000);
     } else {
       // 初始抽取
       if (state.isStarted && !state.currentUnit) {
@@ -43,7 +43,7 @@ const CurrentSelection: React.FC = () => {
       // 設置定時器
       timerRef.current = window.setInterval(() => {
         drawNext();
-      }, 0.01 * 1000);
+      }, 1 * 1000);
     }
 
     // 清理函數
