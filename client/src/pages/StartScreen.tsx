@@ -95,10 +95,10 @@ const StartScreen: React.FC = () => {
                 📢【台北雪梨灣｜機車位電腦抽籤公告】
               </h2>
               <p className="text-lg text-blue-600 font-semibold mb-3">
-                ⏰時間：7/5 19:00線上直播
+                ⏰時間：7/5 19:00 線上直播
               </p>
               <p className="text-lg text-gray-700">
-                🛵 本次機車格共計 619 格，將進行電腦抽籤作業，分為「第一車位（固定）476戶」及「第二車位（月租）87戶」抽籤。
+                🛵 本次機車格共計 619 格，將進行電腦抽籤作業，分為「第一車位（固定）476 戶」及「第二車位（月租）87 戶」抽籤。
               </p>
             </div>
             
@@ -135,7 +135,7 @@ const StartScreen: React.FC = () => {
               
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-red-600 mb-3">⛔以下為自行車專區（不列入抽籤）共 13 格：</h3>
-                <div className="space-y-1 ml-4 text-sm">
+                <div className="space-y-1 ml-4">
                   <p>B1：572、573</p>
                   <p>B2：159、160、161、486、487、408、338、339、340</p>
                   <p>B3：82、143-1</p>
