@@ -98,7 +98,7 @@ const StartScreen: React.FC = () => {
                 ⏰時間：7/5 19:00線上直播
               </p>
               <p className="text-lg text-gray-700">
-                🛵 本次機車格共計 619格，將進行電腦抽籤作業，分為「第一車位（固定）476戶」及「第二車位（月租）79戶」抽籤。
+                🛵 本次機車格共計 619 格，將進行電腦抽籤作業，分為「第一車位（固定）476戶」及「第二車位（月租）87戶」抽籤。
               </p>
             </div>
             
@@ -106,11 +106,11 @@ const StartScreen: React.FC = () => {
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-blue-600 mb-3">🔹第一車位（固定）隨機抽籤分區如下：</h3>
                 <div className="space-y-2 ml-4">
-                  <p>🦄 AB棟 ➜ 抽AB區車位</p>
-                  <p className="ml-4">　未中籤者 ➜ 剩餘2戶抽B3</p>
-                  <p>🦄 CDEF棟 ➜ 抽B3區車位</p>
-                  <p>🦄 CDEFGH棟 ➜ 抽B2區車位</p>
-                  <p>🦄 IJ棟 ➜ 抽B1區車位</p>
+                  <p>🦄 AB 棟 ➜ 抽 AB 區車位</p>
+                  <p className="ml-4">　未中籤者 ➜ 剩餘 2 戶抽 B3</p>
+                  <p>🦄 CDEF 棟 ➜ 抽 B3 區車位</p>
+                  <p>🦄 CDEFGH 棟 ➜ 抽 B2 區車位</p>
+                  <p>🦄 IJ 棟 ➜ 抽 B1 區車位</p>
                 </div>
               </div>
               
@@ -119,22 +119,22 @@ const StartScreen: React.FC = () => {
                 <div className="space-y-2 ml-4">
                   <p>🏠 F5-1F、F7-1F、F8-1F、F9-1F</p>
                   <p>🏠 E9-2F、E8-2F、E7-2F、E6-2F、E5-2F</p>
-                  <p>👉 以上 9戶 ➜ 抽 B1</p>
+                  <p>👉 以上 9 戶 ➜ 抽 B1</p>
                   <p>🏠 E8-1F、E7-1F、E6-1F、E5-1F</p>
-                  <p>👉 共 4戶 ➜ 抽 B2</p>
+                  <p>👉 共 4 戶 ➜ 抽 B2</p>
                 </div>
               </div>
               
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-green-600 mb-3">💰第二車位（月租）照登記順序抽籤：</h3>
                 <div className="space-y-2 ml-4">
-                  <p>B3餘13格、B2餘22格、B1餘82格，共117格可出租機車位：</p>
-                  <p>登記共 78+1（友善）戶需求 ➜ 抽出後年繳使用</p>
+                  <p>B3 餘 13 格、B2 餘 31 格、B1 餘 73 格，共 117 格可出租機車位：</p>
+                  <p>登記共 87 戶需求 ➜ 抽出後年繳使用</p>
                 </div>
               </div>
               
               <div className="mb-4">
-                <h3 className="text-lg font-semibold text-red-600 mb-3">⛔以下為自行車專區（不列入抽籤）共 13格：</h3>
+                <h3 className="text-lg font-semibold text-red-600 mb-3">⛔以下為自行車專區（不列入抽籤）共 13 格：</h3>
                 <div className="space-y-1 ml-4 text-sm">
                   <p>B1：572、573</p>
                   <p>B2：159、160、161、486、487、408、338、339、340</p>
