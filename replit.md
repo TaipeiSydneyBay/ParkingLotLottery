@@ -1,125 +1,219 @@
-# Parking Spot Assignment System
+# 台北雪梨灣社區機車停車位電腦選號系統
 
-## Overview
+## 專案概述
 
-This is a full-stack web application for automatically assigning parking spots to residential units in a Taiwanese community complex. The system provides a fair lottery-based selection process with a modern, responsive interface built with React and TypeScript.
+這是一個專為台北雪梨灣社區設計的機車停車位自動分配系統。系統透過公平的電腦抽籤方式，自動為社區住戶分配機車停車位，並支援兩輪抽籤機制以滿足不同需求。
 
-## System Architecture
+### 核心功能
+- **第一輪抽籤**：依據住戶棟別限制，自動分配符合資格的停車位
+- **第二輪抽籤**：針對需要第二個停車位的住戶，支援偏好區域選擇
+- **即時抽籤動畫**：每3秒自動抽出一個停車位，提供視覺化抽籤過程
+- **詳細結果顯示**：包含各區域車位分布、已分配狀態、剩餘車位等資訊
+- **暫停/繼續功能**：管理員可隨時暫停或繼續抽籤過程
 
-### Frontend Architecture
-- **Framework**: React 18 with TypeScript
-- **Routing**: Wouter for client-side routing
-- **UI Library**: Radix UI components with custom Tailwind CSS styling (shadcn/ui)
-- **State Management**: React Context API with useReducer for parking state
-- **Data Fetching**: TanStack Query for server state management
-- **Build Tool**: Vite with hot module replacement
-- **Styling**: Tailwind CSS with custom design system
+## 技術架構
 
-### Backend Architecture
-- **Runtime**: Node.js with Express.js
-- **Language**: TypeScript with ES modules
-- **API Design**: RESTful API endpoints
-- **Development**: tsx for TypeScript execution in development
-- **Production**: esbuild for server bundling
+### 前端技術棧
+- **框架**：React 18 + TypeScript + Vite
+- **路由**：Wouter 輕量級路由管理
+- **UI組件**：Radix UI + shadcn/ui + Tailwind CSS
+- **狀態管理**：React Context API + useReducer
+- **API管理**：TanStack Query v5
+- **動畫**：Framer Motion
 
-### Database & ORM
-- **Database**: PostgreSQL (configured for Neon serverless)
-- **ORM**: Drizzle ORM with type-safe schema definitions
-- **Migrations**: Drizzle Kit for schema management
-- **Connection**: @neondatabase/serverless for serverless PostgreSQL
+### 後端技術棧
+- **執行環境**：Node.js + Express.js
+- **開發工具**：tsx (TypeScript直接執行)
+- **資料儲存**：記憶體儲存 (MemStorage)
+- **API設計**：RESTful API
+- **資料驗證**：Zod
 
-## Key Components
+### 資料庫配置
+- **ORM**：Drizzle ORM (已配置但未使用)
+- **資料庫**：PostgreSQL (Neon serverless，已配置但未使用)
+- **當前儲存**：記憶體儲存，適合快速開發和測試
 
-### Core Features
-1. **Parking Spot Selection System**
-   - Fair lottery-based assignment
-   - Two-round selection process (first round for eligible spots, second round for remaining spots)
-   - Real-time selection with automatic progression
-   - Pause/resume functionality
+## 系統架構詳解
 
-2. **Unit Management**
-   - Building-based organization (A, B, C, D, E, F, G, H, I, J)
-   - Floor and unit number tracking
-   - Parking area eligibility rules
-
-3. **Parking Area Management**
-   - Four parking areas: AB, B3, B2, B1
-   - Reserved spots and biclcye spots filtering
-   - Friendly spots for accessibility needs
-
-4. **Selection Interface**
-   - Start screen with system overview
-   - Live selection display with current unit and spot
-   - Results overview with building filters
-   - Remaining spots visualization
-   - CSV export functionality
-
-### Data Models
-- **Units**: Building, number, floor information
-- **Parking Spots**: Area-based spot allocation with special categories
-- **Assignments**: Unit-to-spot mappings with selection order
-- **State Management**: Complete system state tracking
-
-## Data Flow
-
-1. **Initialization**: System loads unit data from JSON files and generates available parking spots
-2. **Selection Start**: Units are shuffled and queued for selection
-3. **Assignment Process**: 
-   - Units are selected in random order
-   - Eligible parking spots are filtered based on building rules
-   - Spots are assigned automatically with visual feedback
-4. **Second Round**: Remaining units can select from any available spots
-5. **Export**: Final assignments can be exported as CSV
-
-## External Dependencies
-
-### Core Framework Dependencies
-- React ecosystem (React, React DOM)
-- Radix UI components for accessible UI primitives
-- TanStack Query for server state management
-- Wouter for lightweight routing
-
-### Database & Backend
-- Drizzle ORM for type-safe database operations
-- Neon serverless PostgreSQL
-- Express.js for API server
-
-### Development Tools
-- Vite for fast development and building
-- TypeScript for type safety
-- Tailwind CSS for styling
-- esbuild for production builds
-
-### Replit Integration
-- Replit-specific Vite plugins for development experience
-- Runtime error modal for debugging
-
-## Deployment Strategy
-
-### Development Environment
-- **Server**: tsx runs TypeScript directly with hot reload
-- **Client**: Vite dev server with HMR
-- **Database**: Drizzle push for schema updates
-
-### Production Build
-- **Client**: Vite builds optimized static assets to `dist/public`
-- **Server**: esbuild bundles server code to `dist/index.js`
-- **Deployment**: Single Node.js process serving both API and static files
-
-### Environment Configuration
-- Database connection via `DATABASE_URL` environment variable
-- Development vs production mode detection
-- Replit-specific features conditionally enabled
-
-## Changelog
-
+### 住戶與停車區域配置
 ```
-Changelog:
-- July 02, 2025. Initial setup
+建築分組：
+- AB棟：44戶，可抽 AB區(42位) + B3區(2位)
+- C棟：83戶，可抽 B3區、B2區
+- D棟：84戶，可抽 B3區、B2區  
+- E棟：89戶，可抽 B3區、B2區
+- F棟：96戶，可抽 B3區、B2區
+- GH棟：40戶，可抽 B2區(40位預留)
+- IJ棟：40戶，可抽 B1區(40位預留)
 ```
 
-## User Preferences
+### 停車位分類
+- **一般車位**：標準機車停車位
+- **友善車位**：為身障人士或特殊需求預留
+- **不適合車位**：因環境因素標記為不適合的車位
+- **預留車位**：為特定建築群預留的專用車位
+
+### 抽籤機制
+1. **第一輪抽籤**：
+   - 載入 `units.json` 中的住戶資料
+   - 依據建築分組規則限制可抽取區域
+   - 隨機排序住戶，每3秒自動抽取一位
+   - 自動分配符合資格的停車位
+
+2. **第二輪抽籤**：
+   - 載入 `second.json` 中需要第二個停車位的住戶
+   - 住戶可指定偏好停車區域
+   - 優先分配偏好區域，無可用時分配其他區域
+   - 支援空陣列表示無特定偏好
+
+## 核心組件架構
+
+### 頁面組件
+- **StartScreen**：歡迎頁面，包含系統介紹和抽籤公告
+- **SelectionScreen**：抽籤進行頁面，顯示即時抽籤過程
+- **NotFound**：404錯誤頁面
+
+### 功能組件
+- **CurrentSelection**：當前抽籤狀態顯示
+- **ResultsOverview**：抽籤結果總覽，支援建築篩選
+- **RemainingSpots**：剩餘車位詳細資訊，含第二輪車位顯示
+- **BuildingFilter**：建築篩選器
+
+### 核心邏輯
+- **ParkingContext**：全域狀態管理，包含抽籤邏輯和API呼叫
+- **MemStorage**：記憶體資料儲存，管理住戶、車位、分配記錄
+
+## 資料流程
+
+### 初始化流程
+1. 系統啟動時載入住戶資料 (`units.json`)
+2. 生成所有停車位資料 (AB: 42位, B3: 140位, B2: 462位, B1: 122位)
+3. 設定預留車位、友善車位、不適合車位
+4. 初始化抽籤狀態
+
+### 第一輪抽籤流程
+1. 住戶隨機排序，開始抽籤
+2. 每3秒自動抽取一位住戶
+3. 依據住戶棟別查詢可抽取區域
+4. 隨機分配符合資格的停車位
+5. 更新剩餘車位和已分配記錄
+
+### 第二輪抽籤流程
+1. 載入第二輪需求住戶資料 (`second.json`)
+2. 依據住戶偏好區域進行抽籤
+3. 優先分配偏好區域車位
+4. 偏好區域無車位時分配其他可用區域
+5. 更新第二輪分配記錄
+
+## 視覺設計
+
+### 色彩系統
+- **車位狀態**：
+  - 白色：一般可用車位
+  - 綠色：友善車位  
+  - 紅色：不適合車位
+  - 灰色：第一輪已分配
+  - 藍色：第二輪已分配
+
+### 響應式設計
+- 支援桌面、平板、手機三種螢幕尺寸
+- 使用 Tailwind CSS 格線系統
+- 動態調整組件佈局
+
+## 部署配置
+
+### 開發環境
+- **指令**：`npm run dev`
+- **前端**：Vite 開發伺服器 (HMR)
+- **後端**：tsx 直接執行 TypeScript
+- **埠號**：5000
+
+### 生產環境  
+- **建構**：`npm run build`
+- **前端**：Vite 建構至 `dist/public`
+- **後端**：esbuild 打包至 `dist/index.js`
+- **執行**：`npm start`
+
+### Replit 整合
+- 自動重啟工作流程
+- 內建錯誤提示模組
+- 支援即時預覽
+
+## 專案檔案結構
 
 ```
-Preferred communication style: Simple, everyday language.
+├── client/src/
+│   ├── components/        # React 組件
+│   │   ├── ui/           # shadcn/ui 基礎組件
+│   │   ├── CurrentSelection.tsx
+│   │   ├── ResultsOverview.tsx
+│   │   ├── RemainingSpots.tsx
+│   │   └── BuildingFilter.tsx
+│   ├── contexts/         # React Context
+│   │   └── ParkingContext.tsx
+│   ├── hooks/           # 自定義 Hook
+│   ├── lib/             # 工具函式
+│   ├── pages/           # 頁面組件
+│   │   ├── StartScreen.tsx
+│   │   ├── SelectionScreen.tsx
+│   │   └── not-found.tsx
+│   └── App.tsx
+├── server/
+│   ├── index.ts         # Express 伺服器
+│   ├── routes.ts        # API 路由
+│   ├── storage.ts       # 資料儲存邏輯
+│   ├── vite.ts          # Vite 整合
+│   ├── units.json       # 住戶資料
+│   └── second.json      # 第二輪需求資料
+├── shared/
+│   └── schema.ts        # 共用型別定義
+└── 設定檔案...
 ```
+
+## 重要更新紀錄
+
+### 2025年1月5日
+- **修復第二輪抽籤自動繼續問題**：改善後端隨機選擇邏輯和前端定時器管理
+- **更新開始畫面設計**：新增「台北雪梨灣｜機車位電腦抽籤公告」標題
+- **重新設計視覺圖示**：使用 SVG 製作機車、停車場、抽籤箱圖示
+- **完善車位顯示功能**：在 RemainingSpots 組件加入第二輪車位顯示
+- **優化圖例說明**：區分第一輪（灰色）和第二輪（藍色）已分配車位
+
+### 2025年1月2日
+- **專案初始建置**：完成基礎架構和核心功能
+- **實現兩輪抽籤機制**：支援第一輪和第二輪不同抽籤邏輯
+- **建立視覺化介面**：完成抽籤動畫和結果顯示
+
+## 使用者偏好設定
+
+### 溝通風格
+- **語言**：繁體中文
+- **語調**：簡潔易懂的日常用語
+- **技術層級**：避免過度技術化的說明
+
+### 功能偏好
+- **自動化**：偏好自動化流程，減少手動操作
+- **視覺化**：重視清晰的視覺回饋和狀態顯示
+- **穩定性**：要求系統穩定運行，避免中斷
+
+## 開發指引
+
+### 代碼風格
+- 使用 TypeScript 嚴格模式
+- 組件採用函數式寫法
+- 優先使用 React Hooks
+- 遵循 shadcn/ui 設計規範
+
+### 資料處理
+- 使用 Zod 進行資料驗證
+- 透過 TanStack Query 管理 API 狀態
+- 採用不可變資料更新模式
+
+### 效能優化
+- 採用記憶體儲存以提升回應速度
+- 使用 React.memo 避免不必要的重新渲染
+- 合理使用 useCallback 和 useMemo
+
+---
+
+*最後更新：2025年1月5日*
