@@ -49,6 +49,12 @@ const RemainingSpots: React.FC = () => {
     <Card className="w-full">
       <div className="bg-primary text-white p-4">
         <h2 className="text-xl font-bold">所有車位詳細資訊</h2>
+        <div className="mt-2 text-sm opacity-90">
+          第一輪已分配：{state.assignments.length} 個
+          {state.secondRoundAssignments.length > 0 && (
+            <span className="ml-4">第二輪已分配：{state.secondRoundAssignments.length} 個</span>
+          )}
+        </div>
       </div>
 
       <div className="p-4 space-y-6">
@@ -68,6 +74,9 @@ const RemainingSpots: React.FC = () => {
                         const alreadyAssigned = state.assignments.some(
                           (assignment) => assignment.spot === fullSpotId
                         );
+                        const secondRoundAssigned = state.secondRoundAssignments.some(
+                          (assignment) => assignment.spot === fullSpotId
+                        );
                         const isBad = state.badSpots.includes(fullSpotId);
                         const isFriendly =
                           state.friendlySpots.includes(fullSpotId);
@@ -82,10 +91,12 @@ const RemainingSpots: React.FC = () => {
                                 ? "bg-green-300"
                                 : alreadyAssigned
                                 ? "bg-gray-300"
+                                : secondRoundAssigned
+                                ? "bg-blue-300"
                                 : "bg-white") +
                               ` border border-gray-200 rounded px-1 py-1 text-center text-xs font-mono`
                             }
-                            title={fullSpotId}
+                            title={`${fullSpotId}${alreadyAssigned ? ' (第一輪已分配)' : secondRoundAssigned ? ' (第二輪已分配)' : ''}`}
                           >
                             {spot}
                           </div>
@@ -108,18 +119,26 @@ const RemainingSpots: React.FC = () => {
                 <li>• 包含一般可用車位和各棟預留車位</li>
                 <li>• 樓層分布為估算值，實際以現場標示為準</li>
               </ul>
-              <div className="flex space-x-4 text-sm flex-wrap">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm">
                 <div className="flex items-center space-x-1">
                   <div className="w-4 h-4 bg-white border border-gray-200 rounded"></div>
                   <span className="text-gray-600">一般車位</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <div className="w-4 h-4 bg-green-100 border border-gray-200 rounded"></div>
+                  <div className="w-4 h-4 bg-green-300 border border-gray-200 rounded"></div>
                   <span className="text-gray-600">友善車位</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <div className="w-4 h-4 bg-red-100 border border-gray-200 rounded"></div>
+                  <div className="w-4 h-4 bg-red-300 border border-gray-200 rounded"></div>
                   <span className="text-gray-600">不適合車位</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="w-4 h-4 bg-gray-300 border border-gray-200 rounded"></div>
+                  <span className="text-gray-600">第一輪已分配</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="w-4 h-4 bg-blue-300 border border-gray-200 rounded"></div>
+                  <span className="text-gray-600">第二輪已分配</span>
                 </div>
               </div>
             </div>
